@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepAura Agency | We Build Digital Experiences That Drive Growth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712; /* gray-950 */
+            color: #d1d5db; /* gray-300 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+        .nav-link {
+            @apply relative text-gray-300 hover:text-white transition-colors duration-300;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            background: linear-gradient(to right, #a855f7, #6366f1);
+            transition: all 0.3s ease-out;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        .gradient-text {
+            @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-500;
+        }
+        .primary-btn {
+            @apply inline-block bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-purple-500/20 hover:scale-105 transition-all duration-300;
+        }
+        .section-heading {
+            @apply text-center max-w-3xl mx-auto;
+        }
+        .section-heading h2 {
+            @apply text-4xl md:text-5xl font-bold text-white mb-4;
+        }
+        .section-heading p {
+            @apply text-lg text-gray-400;
+        }
+        .glass-card {
+            @apply bg-gray-900/50 backdrop-blur-xl border border-gray-800 rounded-2xl p-8 transition-all duration-300 hover:border-purple-500/50 hover:-translate-y-2;
+        }
+
+        /* Opening Animation */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #030712;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+        #preloader .aura-logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            opacity: 0;
+            animation: fadeInLogo 1s ease-out forwards, pulseAura 2s infinite ease-in-out 1s;
+        }
+
+        @keyframes fadeInLogo {
+            to { opacity: 1; }
+        }
+        @keyframes pulseAura {
+            0%, 100% { text-shadow: 0 0 10px rgba(168, 85, 247, 0.4), 0 0 20px rgba(168, 85, 247, 0.2); }
+            50% { text-shadow: 0 0 20px rgba(168, 85, 247, 0.7), 0 0 40px rgba(168, 85, 247, 0.4); }
+        }
+        .loaded body {
+            opacity: 1;
+        }
+        .loaded #preloader {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Scroll Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .scroll-animate {
+            opacity: 0;
+        }
+        .scroll-animate.is-visible {
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        /* Aura of Expertise Section */
+        .aura-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+        .aura-center {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(168,85,247,0.3) 0%, rgba(168,85,247,0) 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulseCenter 4s infinite ease-in-out;
+        }
+        @keyframes pulseCenter {
+             0%, 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); }
+             70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(168, 85, 247, 0); }
+        }
+        .aura-item {
+            position: absolute;
+            transition: transform 0.3s ease-out;
+        }
+        .aura-item:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    
+    <div id="preloader">
+        <div class="aura-logo">DeepAura</div>
+    </div>
+
+    <!-- HEADER & NAVIGATION -->
+    <header class="bg-gray-950/70 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-800">
+        <nav class="container mx-auto px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-white">DeepAura</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#services" class="nav-link">Expertise</a>
+                <a href="#work" class="nav-link">Success Stories</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#about" class="nav-link">Why Us?</a>
+            </div>
+            <a href="#contact" class="hidden md:inline-block bg-white text-gray-900 font-semibold px-6 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                Start a Project
+            </a>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-300 hover:bg-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 py-4 space-y-2 border-t border-gray-800">
+            <a href="#services" class="block py-2 nav-link">Expertise</a>
+            <a href="#work" class="block py-2 nav-link">Success Stories</a>
+            <a href="#pricing" class="block py-2 nav-link">Pricing</a>
+            <a href="#about" class="block py-2 nav-link">Why Us?</a>
+            <a href="#contact" class="block text-center mt-2 w-full primary-btn py-2.5">Start a Project</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="relative py-24 md:py-40 text-center overflow-hidden">
+             <div class="absolute top-0 left-0 w-full h-full -z-10 bg-gray-950">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_500px_at_50%_200px,#3b0764,transparent)] opacity-50"></div>
+            </div>
+            <div class="container mx-auto px-6 lg:px-8 relative z-10 scroll-animate">
+                <h1 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6">
+                    Your Vision, <span class="gradient-text">Amplified.</span>
+                </h1>
+                <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-10">
+                    We are DeepAura – a creative agency that transforms ambitious ideas into powerful digital realities. We don't just build websites or run campaigns; we build growth engines for your business.
+                </p>
+                <div class="flex justify-center items-center gap-4">
+                    <a href="#contact" class="primary-btn">Schedule a Free Consultation</a>
+                    <a href="#work" class="inline-block bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-gray-700 transition-colors">View Our Work</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- AURA OF EXPERTISE SECTION -->
+        <section id="services" class="py-24">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="section-heading mb-20 scroll-animate">
+                    <h2>Our Aura of Expertise</h2>
+                    <p>We combine deep industry knowledge with technical expertise to deliver solutions that solve real-world problems and drive measurable results.</p>
+                </div>
+                <div class="aura-container scroll-animate">
+                    <div class="aura-center">
+                        <div class="w-24 h-24 flex items-center justify-center bg-gray-900 border border-gray-700 rounded-full text-white font-bold text-xl">Aura</div>
+                    </div>
+                    <!-- Aura items will be positioned by JS -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- OUR WORK / TESTIMONIALS SECTION -->
+        <section id="work" class="py-24 bg-gray-900">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="section-heading mb-16 scroll-animate">
+                    <h2>Our Clients' Success Stories</h2>
+                    <p>Don't just take our word for it. Here's what our clients have to say about the impact we've made on their businesses.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="scroll-animate" style="--delay: 0.1s;">
+                        <div class="glass-card flex flex-col h-full">
+                            <h3 class="text-2xl font-bold text-white mb-2">E-commerce Brand Refresh</h3>
+                            <p class="text-gray-300 italic text-lg mb-6 flex-grow">"The complete Shopify overhaul and content strategy from DeepAura boosted our sales by 40% in just 3 months. Their expertise is unmatched."</p>
+                            <div class="border-t border-gray-800 pt-6 mt-auto">
+                                <div class="flex items-center">
+                                    <img src="https://placehold.co/48x48/8b5cf6/ffffff?text=J" alt="Reviewer Jane Doe" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold text-white">Jane Doe</h4>
+                                        <p class="text-sm text-gray-400">CEO, Fashion Forward</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm font-semibold text-purple-400 mt-4">Services: Shopify Development & Video Content</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="scroll-animate" style="--delay: 0.2s;">
+                        <div class="glass-card flex flex-col h-full">
+                            <h3 class="text-2xl font-bold text-white mb-2">Real Estate Lead Generation</h3>
+                            <p class="text-gray-300 italic text-lg mb-6 flex-grow">"DeepAura's high-converting landing page and video reel campaign were game-changers. We generated over 200 qualified leads and our agents have never been busier."</p>
+                             <div class="border-t border-gray-800 pt-6 mt-auto">
+                                <div class="flex items-center">
+                                    <img src="https://placehold.co/48x48/34d399/ffffff?text=M" alt="Reviewer Mike Ross" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold text-white">Mike Ross</h4>
+                                        <p class="text-sm text-gray-400">Owner, Apex Realty</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm font-semibold text-purple-400 mt-4">Services: Web Design & Social Media Marketing</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scroll-animate" style="--delay: 0.3s;">
+                        <div class="glass-card flex flex-col h-full">
+                            <h3 class="text-2xl font-bold text-white mb-2">Sold-Out Coaching Program</h3>
+                            <p class="text-gray-300 italic text-lg mb-6 flex-grow">"Working with DeepAura was a turning point. They built a powerful sales funnel and email automation sequence that led to our first sold-out program. Their strategic approach is incredible."</p>
+                            <div class="border-t border-gray-800 pt-6 mt-auto">
+                                <div class="flex items-center">
+                                    <img src="https://placehold.co/48x48/ec4899/ffffff?text=E" alt="Reviewer Dr. Emily Carter" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold text-white">Dr. Emily Carter</h4>
+                                        <p class="text-sm text-gray-400">Founder, The Mindful Leader</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm font-semibold text-purple-400 mt-4">Services: Landing Pages & Email Automation</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scroll-animate" style="--delay: 0.4s;">
+                         <div class="glass-card flex flex-col h-full">
+                            <h3 class="text-2xl font-bold text-white mb-2">Wellness App Brand Launch</h3>
+                            <p class="text-gray-300 italic text-lg mb-6 flex-grow">"DeepAura captured the essence of our wellness brand perfectly. The website and social content they created helped us build a strong community and attract thousands of early users."</p>
+                             <div class="border-t border-gray-800 pt-6 mt-auto">
+                                <div class="flex items-center">
+                                    <img src="https://placehold.co/48x48/10b981/ffffff?text=S" alt="Reviewer Sarah Chen" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold text-white">Sarah Chen</h4>
+                                        <p class="text-sm text-gray-400">Co-Founder, Bloom Wellness</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm font-semibold text-purple-400 mt-4">Services: Brand Design & Social Media Management</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRICING SECTION -->
+        <section id="pricing" class="py-24">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="section-heading mb-16 scroll-animate">
+                    <h2>Transparent Pricing for Powerful Results</h2>
+                    <p>No hidden fees, no complex contracts. Just clear, upfront pricing for services designed to help you grow.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Pricing Card 1: Website -->
+                    <div class="glass-card flex flex-col scroll-animate" style="--delay: 0.1s;">
+                        <h3 class="font-bold text-white text-xl mb-4">Premium Website</h3>
+                        <p class="text-gray-400 mb-6 flex-grow">A complete, modern, and responsive website to establish your digital presence.</p>
+                        <div class="text-4xl font-extrabold text-white mb-2">$120</div>
+                        <p class="text-gray-500">Starting From</p>
+                        <a href="#contact" class="mt-6 text-center w-full inline-block bg-gray-700/50 text-white font-semibold px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">Get Started</a>
+                    </div>
+                     <!-- Pricing Card 2: Social Media -->
+                    <div class="glass-card flex flex-col scroll-animate" style="--delay: 0.2s;">
+                        <h3 class="font-bold text-white text-xl mb-4">Social Media Management</h3>
+                        <p class="text-gray-400 mb-6 flex-grow">Content creation (images, posts, copy) to grow your audience and engagement.</p>
+                        <div class="text-4xl font-extrabold text-white mb-2">$100<span class="text-lg font-medium text-gray-400">/mo</span></div>
+                        <p class="text-gray-500">Starting From</p>
+                         <a href="#contact" class="mt-6 text-center w-full inline-block bg-gray-700/50 text-white font-semibold px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">Get Started</a>
+                    </div>
+                     <!-- Pricing Card 3: Video -->
+                    <div class="glass-card flex flex-col scroll-animate" style="--delay: 0.3s;">
+                        <h3 class="font-bold text-white text-xl mb-4">Viral Video Content</h3>
+                        <p class="text-gray-400 mb-6 flex-grow">Professional editing for Shorts & Reels to capture attention. $10/video or monthly package.</p>
+                        <div class="text-4xl font-extrabold text-white mb-2">$250<span class="text-lg font-medium text-gray-400">/mo</span></div>
+                        <p class="text-gray-500">Monthly Package</p>
+                         <a href="#contact" class="mt-6 text-center w-full inline-block bg-gray-700/50 text-white font-semibold px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">Get Started</a>
+                    </div>
+                     <!-- Pricing Card 4: Email Marketing -->
+                    <div class="glass-card flex flex-col scroll-animate" style="--delay: 0.4s;">
+                        <h3 class="font-bold text-white text-xl mb-4">Email Marketing & Copy</h3>
+                        <p class="text-gray-400 mb-6 flex-grow">Full-service email marketing, including persuasive copy to nurture and convert leads.</p>
+                        <div class="text-4xl font-extrabold text-white mb-2">$150<span class="text-lg font-medium text-gray-400">/mo</span></div>
+                        <p class="text-gray-500">Starting From</p>
+                         <a href="#contact" class="mt-6 text-center w-full inline-block bg-gray-700/50 text-white font-semibold px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT / WHY US SECTION -->
+        <section id="about" class="py-24">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-16 items-center scroll-animate">
+                    <div class="flex justify-center">
+                        <div class="p-1.5 rounded-3xl bg-gradient-to-br from-purple-600 to-indigo-500 shadow-2xl shadow-purple-900/40 w-full max-w-[420px]">
+                            <img src="https://raw.githubusercontent.com/Sahinur567/portfolio/main/Add%20a%20subheading.png" 
+                                 alt="Owner of DeepAura Agency"
+                                 class="rounded-2xl w-full h-auto aspect-square object-cover"
+                                 onerror="this.onerror=null;this.src='https://placehold.co/420x420/1f2937/9ca3af?text=DeepAura';">
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">A Partner, Not Just a Provider.</h2>
+                        <p class="text-lg text-gray-400 mb-8">
+                            Hi, I'm Sahinur, founder of DeepAura. My mission is to build an agency that functions as a true extension of your team. We embed ourselves in your vision, ensuring every decision we make is aligned with your ultimate goals.
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center bg-purple-900/50 text-purple-300 rounded-full mt-1">✓</div>
+                                <div>
+                                    <h4 class="text-xl font-semibold text-white">Results-Obsessed</h4>
+                                    <p class="text-gray-400">We're driven by data and focused on delivering tangible ROI, not just pretty designs.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center bg-purple-900/50 text-purple-300 rounded-full mt-1">✓</div>
+                                <div>
+                                    <h4 class="text-xl font-semibold text-white">Transparent Communication</h4>
+                                    <p class="text-gray-400">You'll always know the status of your project. We believe in clear, honest, and proactive updates.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="py-24 bg-gray-900">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="section-heading mb-12 scroll-animate">
+                    <h2>Have a Project in Mind?</h2>
+                    <p>Let's turn your idea into reality. Fill out the form below, and we'll be in touch to schedule your free, no-obligation consultation.</p>
+                </div>
+                <div class="max-w-2xl mx-auto glass-card scroll-animate">
+                    <form action="https://formspree.io/f/xldnzeab" method="POST">
+                        <div class="mb-5">
+                            <label for="name" class="block text-gray-300 font-medium mb-2">Your Name</label>
+                            <input type="text" id="name" name="name" required class="w-full p-3 bg-gray-800 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white transition-all">
+                        </div>
+                        <div class="mb-5">
+                            <label for="email" class="block text-gray-300 font-medium mb-2">Your Email</label>
+                            <input type="email" id="email" name="email" required class="w-full p-3 bg-gray-800 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white transition-all">
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-300 font-medium mb-2">Your Message</label>
+                            <textarea id="message" name="message" rows="5" required class="w-full p-3 bg-gray-800 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white transition-all" placeholder="Tell us about your project, your goals, and your timeline..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full primary-btn py-3.5">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-950 border-t border-gray-800">
+        <div class="container mx-auto px-6 lg:px-8 py-8 text-center text-gray-500">
+            <p class="mb-2">DeepAura Agency</p>
+            <p class="mb-4 text-sm"><a href="tel:+918653368959" class="hover:text-purple-400 transition-colors">+91 86533 68959</a> &bull; Murshidabad, West Bengal, India</p>
+            <p class="text-xs">&copy; <span id="year"></span> DeepAura Agency. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.documentElement.classList.add('loaded');
+            }, 500);
+        });
+
+        // Mobile Menu
+        document.getElementById('mobile-menu-button').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+        
+        // Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    const delay = entry.target.style.getPropertyValue('--delay') || '0s';
+                    entry.target.style.animationDelay = delay;
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-animate').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Aura of Expertise Circle Layout
+        const auraContainer = document.querySelector('.aura-container');
+        const items = [
+            { name: 'Coaching', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v4"/><path d="M12 18.5a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13Z"/></svg>' },
+            { name: 'Real Estate', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>' },
+            { name: 'E-commerce', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.16"/></svg>' },
+            { name: 'Wellness', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>' },
+            { name: 'Startups', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.3.05-3.05-.64-.75-1.94-1-3.05-.05z"/><path d="M19.5 8.5c1.5-1.26 2-5 2-5s-3.74.5-5 2c-.71.84-.7 2.3.05 3.05.64.75 1.94 1 3.05.05z"/><path d="M12 22s-4-2-4-8 4-8 4-8 4 2 4 8-4 8-4 8z"/></svg>' },
+            { name: 'Creators', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>' }
+        ];
+        const radius = window.innerWidth < 768 ? 120 : 200;
+        const angleStep = (2 * Math.PI) / items.length;
+
+        items.forEach((item, i) => {
+            const angle = i * angleStep - (Math.PI / 2);
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            
+            const el = document.createElement('div');
+            el.className = 'aura-item text-center group';
+            el.style.transform = `translate(${x}px, ${y}px)`;
+            el.innerHTML = `
+                <div class="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-full text-gray-400 group-hover:text-white transition-colors duration-300">
+                    ${item.icon}
+                </div>
+                <span class="mt-3 inline-block text-gray-400 group-hover:text-white">${item.name}</span>
+            `;
+            auraContainer.appendChild(el);
+        });
+    </script>
+</body>
+</html>
