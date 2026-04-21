@@ -20,7 +20,6 @@
   --cyan-dim: rgba(0, 240, 255, 0.1);
   --magenta: #ff003c;
   --magenta-dim: rgba(255, 0, 60, 0.15);
-  --yellow: #fcee0a;
   --purple: #b026ff;
   
   --white: #e0e6ed;
@@ -78,8 +77,8 @@ body {
 }
 @keyframes spinRing { 100% { transform: translate(-50%,-50%) rotate(360deg); } }
 body:hover #cursor { opacity: 1; }
-.hoverable:hover ~ #cursor, a:hover ~ #cursor, button:hover ~ #cursor { width: 10px; height: 10px; background: var(--magenta); box-shadow: 0 0 20px var(--magenta); }
-.hoverable:hover ~ #cursor-ring, a:hover ~ #cursor-ring, button:hover ~ #cursor-ring { width: 60px; height: 60px; border-color: var(--magenta); border-style: solid; background: rgba(255,0,60,0.05); }
+.hoverable:hover ~ #cursor, a:hover ~ #cursor, button:hover ~ #cursor, .faq-q:hover ~ #cursor { width: 10px; height: 10px; background: var(--magenta); box-shadow: 0 0 20px var(--magenta); }
+.hoverable:hover ~ #cursor-ring, a:hover ~ #cursor-ring, button:hover ~ #cursor-ring, .faq-q:hover ~ #cursor-ring { width: 60px; height: 60px; border-color: var(--magenta); border-style: solid; background: rgba(255,0,60,0.05); }
 
 /* ─── HUD OVERLAYS & NOISE ─── */
 .crt-scanlines {
@@ -97,18 +96,46 @@ body:hover #cursor { opacity: 1; }
 .hud-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
 .hud-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
 
+/* ─── LOGO STYLING (ANIMATED AURA) ─── */
+.magenta-text {
+  color: var(--magenta);
+  display: inline-block;
+  animation: auraGlow 2s ease-in-out infinite alternate, auraWave 4s linear infinite;
+}
+@keyframes auraGlow {
+  0% { text-shadow: 0 0 10px var(--magenta), 0 0 20px var(--magenta); }
+  100% { text-shadow: 0 0 20px var(--magenta), 0 0 40px var(--magenta), 0 0 60px var(--magenta); color: #ff3366; }
+}
+@keyframes auraWave {
+  0%, 100% { transform: translateY(0) skewX(0); filter: hue-rotate(0deg); }
+  25% { transform: translateY(-1px) skewX(-2deg); filter: hue-rotate(15deg); }
+  75% { transform: translateY(1px) skewX(2deg); filter: hue-rotate(-15deg); }
+}
+
 /* ─── SYSTEM INITIALIZATION (Preloader) ─── */
 #preloader {
   position: fixed; inset: 0; background: var(--black); z-index: 10000;
   display: flex; align-items: center; justify-content: center; flex-direction: column;
   transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.4s ease;
+  padding: 0 5%;
 }
 #preloader.unlocked { transform: scale(1.1); opacity: 0; pointer-events: none; }
-.sys-logo { font-family: var(--font-display); font-size: 3rem; color: var(--cyan); margin-bottom: 10px; text-shadow: 0 0 20px var(--cyan); letter-spacing: 4px; }
-.sys-text { font-family: var(--font-hud); color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; text-transform: uppercase; animation: pulseText 1s infinite; }
+.sys-logo { font-family: var(--font-display); font-size: clamp(1.8rem, 6vw, 3rem); color: var(--white); margin-bottom: 10px; letter-spacing: 4px; text-align: center; }
+.sys-text { font-family: var(--font-hud); color: var(--text-muted); font-size: clamp(0.7rem, 3vw, 0.9rem); margin-bottom: 30px; text-transform: uppercase; animation: pulseText 1s infinite; text-align: center; }
 @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-.pre-bar { width: 300px; height: 4px; background: rgba(255,255,255,0.05); position: relative; overflow: hidden; margin-bottom: 40px; border: 1px solid var(--border-dim); }
+.pre-bar { width: 100%; max-width: 300px; height: 4px; background: rgba(255,255,255,0.05); position: relative; overflow: hidden; margin-bottom: 40px; border: 1px solid var(--border-dim); }
 .pre-bar-fill { height: 100%; width: 0%; background: var(--cyan); box-shadow: 0 0 15px var(--cyan); transition: width 0.05s linear; }
+.boot-btn {
+  display: none; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: clamp(1rem, 4vw, 1.2rem); font-weight: 900; color: var(--black);
+  background: var(--cyan); border: none; padding: 18px 40px;
+  cursor: none; text-transform: uppercase; letter-spacing: 3px;
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  transition: all 0.3s; box-shadow: 0 0 25px var(--cyan);
+  animation: pulseBoot 2s infinite; margin-top: 20px;
+}
+.boot-btn:hover { background: var(--white); box-shadow: 0 0 40px var(--white); transform: scale(1.05); }
+@keyframes pulseBoot { 0%,100% { box-shadow: 0 0 15px var(--cyan); } 50% { box-shadow: 0 0 35px var(--cyan); } }
 
 /* ─── NAVIGATION ─── */
 nav {
@@ -185,22 +212,22 @@ section { padding: 120px 5%; max-width: 1400px; margin: 0 auto; width: 100%; pos
 
 /* ULTRA STRICT TYPEWRITER CONTAINER - PREVENTS SHAKING */
 h1 {
-  font-family: var(--font-display); font-size: clamp(3rem, 7vw, 6.5rem);
+  font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 6.5rem);
   font-weight: 900; line-height: 1.1; color: var(--white);
   margin-bottom: 25px; text-transform: uppercase; text-shadow: 4px 4px 0px rgba(0,240,255,0.2);
 }
 .type-wrap {
   display: inline-block;
-  min-width: 420px; /* Forces space so typing doesn't shift layout */
+  min-width: 420px;
   text-align: left;
-  white-space: nowrap; /* Prevents text wrap */
+  white-space: nowrap;
   vertical-align: bottom;
 }
 @media(max-width: 900px) { .type-wrap { min-width: 320px; } }
-@media(max-width: 500px) { .type-wrap { min-width: 220px; } }
+@media(max-width: 500px) { .type-wrap { min-width: 200px; } }
 
 .tw-text { color: var(--cyan); text-shadow: 0 0 20px var(--cyan); }
-.tw-cursor { display: inline-block; width: clamp(0.5rem, 2vw, 1rem); height: clamp(3rem, 7vw, 5.5rem); background: var(--cyan); vertical-align: text-bottom; margin-left: 8px; animation: blink 0.8s infinite; }
+.tw-cursor { display: inline-block; width: clamp(0.5rem, 2vw, 1rem); height: clamp(2.5rem, 6vw, 5.5rem); background: var(--cyan); vertical-align: text-bottom; margin-left: 8px; animation: blink 0.8s infinite; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
 .hero-sub { font-size: 1.25rem; line-height: 1.6; color: var(--text-muted); max-width: 650px; margin-bottom: 45px; border-left: 2px solid var(--cyan); padding-left: 20px; }
@@ -268,6 +295,18 @@ h1 {
 .cc-title { font-family: var(--font-display); font-size: 1.6rem; color: var(--white); margin-bottom: 15px; text-transform: uppercase; }
 .c-hero .cc-title { font-size: 2.2rem; }
 .cc-desc { font-size: 1.05rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ─── ARSENAL (TECH STACK) ─── */
+#arsenal { padding-top: 60px; padding-bottom: 60px; }
+.arsenal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 40px; }
+.arsenal-item { 
+  background: var(--surface-panel); border: 1px solid var(--border-dim); 
+  padding: 30px 20px; text-align: center; transition: 0.3s; 
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+.arsenal-item:hover { background: rgba(0,240,255,0.05); border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,240,255,0.2); transform: translateY(-5px); }
+.arsenal-item h4 { font-family: var(--font-display); font-size: 1.2rem; color: var(--white); margin-bottom: 10px; text-transform: uppercase; }
+.arsenal-item p { font-family: var(--font-hud); font-size: 0.85rem; color: var(--cyan); letter-spacing: 1px; }
 
 /* ─── SYSTEM METRICS (RESULTS) ─── */
 #results { background: url('data:image/svg+xml;utf8,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="%2300f0ff" fill-opacity="0.1"/></svg>'); }
@@ -360,6 +399,17 @@ h1 {
 .abt-list { list-style: none; display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; }
 .abt-list li { display: flex; align-items: center; gap: 15px; font-family: var(--font-display); font-size: 1.1rem; color: var(--white); text-transform: uppercase; }
 .abt-list li::before { content: ''; width: 12px; height: 12px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+
+/* ─── FAQ / DATA QUERIES ─── */
+#faq { padding-top: 60px; padding-bottom: 120px; }
+.faq-container { display: flex; flex-direction: column; gap: 15px; max-width: 900px; margin: 0 auto; }
+.faq-item { background: var(--surface-panel); border: 1px solid var(--border-dim); border-left: 3px solid var(--cyan); transition: 0.3s; }
+.faq-item:hover { border-color: var(--border-glow); box-shadow: 0 0 15px rgba(0,240,255,0.1); }
+.faq-q { padding: 20px 30px; font-family: var(--font-display); font-size: 1.2rem; color: var(--white); text-transform: uppercase; cursor: none; display: flex; justify-content: space-between; align-items: center; }
+.faq-q::after { content: '+'; color: var(--cyan); font-size: 1.5rem; transition: 0.3s; }
+.faq-item.active .faq-q::after { content: '−'; color: var(--magenta); transform: rotate(180deg); }
+.faq-a { padding: 0 30px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; }
+.faq-item.active .faq-a { padding: 0 30px 25px 30px; max-height: 500px; }
 
 /* ─── UPLINK (CONTACT & AJAX FORM) ─── */
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
@@ -479,18 +529,19 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 
-<!-- PRELOADER (Auto-loads) -->
+<!-- PRELOADER (Requires Click for Audio) -->
 <div id="preloader">
-  <div class="sys-logo">DEEPAURA_OS</div>
-  <div class="sys-text">Booting Core Modules...</div>
-  <div class="pre-bar"><div class="pre-bar-fill" id="loadFill"></div></div>
+  <div class="sys-logo">DEEP<span class="magenta-text">AURA</span>_OS</div>
+  <div class="sys-text" id="sys-text-dynamic">Booting Core Modules...</div>
+  <div class="pre-bar" id="pre-bar-container"><div class="pre-bar-fill" id="loadFill"></div></div>
+  <button id="bootBtn" class="boot-btn hoverable">INITIATE SYSTEM</button>
 </div>
 
 <!-- NAV -->
 <nav id="nav">
   <a href="#" class="nav-logo hoverable">
     <div class="nav-logo-icon"></div>
-    DeepAura
+    Deep<span class="magenta-text">Aura</span>
   </a>
   <div class="nav-links">
     <a href="#services" class="hoverable">Protocols</a>
@@ -613,6 +664,47 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
       <div class="cc-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg></div>
       <h3 class="cc-title">Automated Funnels</h3>
       <p class="cc-desc">Email and SMS sequences that nurture leads while you sleep, recovering lost capital aggressively.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ARSENAL (TECH STACK) -->
+<section id="arsenal">
+  <h2 class="hud-title">System <span>Arsenal</span></h2>
+  <p class="hud-subtitle">We deploy enterprise-grade digital infrastructure, tools, and environments.</p>
+  
+  <div class="arsenal-grid">
+    <div class="arsenal-item hoverable">
+      <h4>Shopify Plus</h4>
+      <p>ECOMMERCE ENGINE</p>
+    </div>
+    <div class="arsenal-item hoverable">
+      <h4>WordPress</h4>
+      <p>CMS INFRASTRUCTURE</p>
+    </div>
+    <div class="arsenal-item hoverable">
+      <h4>React & Node</h4>
+      <p>CUSTOM WEB APPS</p>
+    </div>
+    <div class="arsenal-item hoverable">
+      <h4>Meta Pixel</h4>
+      <p>NEURAL AD TRACKING</p>
+    </div>
+    <div class="arsenal-item hoverable">
+      <h4>Google Analytics 4</h4>
+      <p>DATA TELEMETRY</p>
+    </div>
+    <div class="arsenal-item hoverable">
+      <h4>Figma</h4>
+      <p>UI/UX PROTOTYPING</p>
+    </div>
+    <div class="arsenal-item hoverable">
+      <h4>Klaviyo</h4>
+      <p>RETENTION FUNNELS</p>
+    </div>
+    <div class="arsenal-item hoverable">
+      <h4>OpenAI API</h4>
+      <p>LLM CHAT AGENTS</p>
     </div>
   </div>
 </section>
@@ -832,6 +924,31 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
   </div>
 </section>
 
+<!-- FAQ / DATA QUERIES -->
+<section id="faq">
+  <h2 class="hud-title" style="text-align: center;">Encrypted <span>Queries</span></h2>
+  <p class="hud-subtitle" style="margin: 0 auto 50px; text-align: center;">Accessing standard operational parameters and protocols.</p>
+  
+  <div class="faq-container">
+    <div class="faq-item">
+      <div class="faq-q">What is the typical deployment timeline?</div>
+      <div class="faq-a">For standard web architecture builds, our average deployment is 5 to 7 days. Full-scale Growth Engine deployments (ads, social, content) are mapped out during the first week and activate immediately thereafter.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do you require long-term contracts?</div>
+      <div class="faq-a">No. We operate on a month-to-month protocol. We retain our clients by generating brutal ROI and consistent results, not by locking them into legal constraints.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How do you track campaign success?</div>
+      <div class="faq-a">We rely on strict data telemetry. Every deployment includes Meta Pixel integration, Google Analytics 4, and server-side tracking to trace every dollar back to its origin.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What if I need a custom architecture?</div>
+      <div class="faq-a">Our outlined tiers cover 90% of business needs. However, if your operation requires custom app development, specialized API integrations, or massive ad spend management, select "Custom Architecture" in the Comms form.</div>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT (AJAX SUBMISSION) -->
 <section id="contact">
   <div class="contact-grid">
@@ -875,15 +992,21 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
           </div>
         </div>
         
-        <div class="f-grp hoverable">
-          <label class="f-label">Required Protocol</label>
-          <select name="service" class="f-input" required>
-            <option value="" disabled selected>Select Module...</option>
-            <option value="Growth Engine">Growth Engine (Ads + Social)</option>
-            <option value="Web Architecture">High-Velocity Website</option>
-            <option value="Market Dominator">Market Dominator (Enterprise)</option>
-            <option value="Other">Custom Architecture</option>
-          </select>
+        <div class="f-row">
+          <div class="f-grp hoverable">
+            <label class="f-label">Comms Terminal (Phone)</label>
+            <input type="tel" name="phone" class="f-input" required placeholder="+1 234 567 8900">
+          </div>
+          <div class="f-grp hoverable">
+            <label class="f-label">Required Protocol</label>
+            <select name="service" class="f-input" required>
+              <option value="" disabled selected>Select Module...</option>
+              <option value="Growth Engine">Growth Engine (Ads + Social)</option>
+              <option value="Web Architecture">High-Velocity Website</option>
+              <option value="Market Dominator">Market Dominator (Enterprise)</option>
+              <option value="Other">Custom Architecture</option>
+            </select>
+          </div>
         </div>
 
         <div class="f-grp hoverable">
@@ -901,7 +1024,7 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
 <footer>
   <div class="f-grid">
     <div>
-      <a href="#" class="f-logo hoverable"><div class="nav-logo-icon" style="display:inline-block; margin-right:10px;"></div>DeepAura</a>
+      <a href="#" class="f-logo hoverable"><div class="nav-logo-icon" style="display:inline-block; margin-right:10px;"></div>Deep<span class="magenta-text">Aura</span></a>
       <p class="f-desc">Next-generation digital architectures engineered to dominate markets and extract maximum capital.</p>
     </div>
     <div>
@@ -947,13 +1070,7 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let aCtx = null;
 let soundEnabled = true;
-
-// A robust way to unlock audio context on FIRST user interaction
-document.body.addEventListener('click', () => {
-  if (!aCtx || aCtx.state === 'suspended') {
-    initAudio();
-  }
-}, { once: true });
+let isHeroVisible = true; // For typewriter sound toggling
 
 function initAudio() {
   if (!aCtx) { aCtx = new AudioContext(); }
@@ -979,7 +1096,10 @@ function playSynth(freq, type, dur, vol) {
 const sounds = {
   hover: () => playSynth(1500, 'sine', 0.05, 0.02),
   click: () => { playSynth(600, 'square', 0.1, 0.05); setTimeout(() => playSynth(400, 'sawtooth', 0.1, 0.05), 40); },
-  type: () => playSynth(Math.random() * 500 + 2000, 'square', 0.02, 0.01),
+  type: () => {
+    if(!isHeroVisible) return;
+    playSynth(Math.random() * 500 + 2000, 'square', 0.02, 0.01)
+  },
   success: () => {
     [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
       setTimeout(() => playSynth(f, 'sine', 0.8, 0.08), i * 150);
@@ -989,73 +1109,60 @@ const sounds = {
   lightning: () => {
     if (!soundEnabled || !aCtx || aCtx.state !== 'running') return;
     try {
-      // White noise crash
       const buffer = aCtx.createBuffer(1, aCtx.sampleRate * 0.5, aCtx.sampleRate);
       const data = buffer.getChannelData(0);
       for(let i=0; i<data.length; i++) data[i] = Math.random() * 2 - 1;
+      const noise = aCtx.createBufferSource(); noise.buffer = buffer;
+      const noiseFilter = aCtx.createBiquadFilter(); noiseFilter.type = 'bandpass'; noiseFilter.frequency.value = 1000;
+      const noiseGain = aCtx.createGain(); noiseGain.gain.setValueAtTime(0.5, aCtx.currentTime); noiseGain.gain.exponentialRampToValueAtTime(0.01, aCtx.currentTime + 0.5);
+      noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(aCtx.destination); noise.start();
       
-      const noise = aCtx.createBufferSource();
-      noise.buffer = buffer;
-      
-      const noiseFilter = aCtx.createBiquadFilter();
-      noiseFilter.type = 'bandpass';
-      noiseFilter.frequency.value = 1000;
-      
-      const noiseGain = aCtx.createGain();
-      noiseGain.gain.setValueAtTime(0.5, aCtx.currentTime);
-      noiseGain.gain.exponentialRampToValueAtTime(0.01, aCtx.currentTime + 0.5);
-      
-      noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(aCtx.destination);
-      noise.start();
-
-      // Low end rumble
-      const osc = aCtx.createOscillator();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(60, aCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(10, aCtx.currentTime + 1);
-      
-      const oscGain = aCtx.createGain();
-      oscGain.gain.setValueAtTime(0.3, aCtx.currentTime);
-      oscGain.gain.exponentialRampToValueAtTime(0.01, aCtx.currentTime + 1.2);
-      
-      osc.connect(oscGain); oscGain.connect(aCtx.destination);
-      osc.start();
-      osc.stop(aCtx.currentTime + 1.2);
+      const osc = aCtx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(60, aCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(10, aCtx.currentTime + 1);
+      const oscGain = aCtx.createGain(); oscGain.gain.setValueAtTime(0.3, aCtx.currentTime); oscGain.gain.exponentialRampToValueAtTime(0.01, aCtx.currentTime + 1.2);
+      osc.connect(oscGain); oscGain.connect(aCtx.destination); osc.start(); osc.stop(aCtx.currentTime + 1.2);
     } catch(e) {}
-  }
+  },
+  formFocus: () => playSynth(800, 'sine', 0.05, 0.03),
+  formType: () => playSynth(2500, 'square', 0.01, 0.01),
+  formSelect: () => { playSynth(1200, 'triangle', 0.1, 0.05); }
 };
 
-/* ─── SYSTEM INITIALIZATION (Auto-Boot) ─── */
+/* ─── SYSTEM INITIALIZATION (Click to Boot) ─── */
 const preBarFill = document.getElementById('loadFill');
+const preBarContainer = document.getElementById('pre-bar-container');
 const preloader = document.getElementById('preloader');
 const lightningVFX = document.getElementById('lightning-vfx');
+const bootBtn = document.getElementById('bootBtn');
+const sysText = document.getElementById('sys-text-dynamic');
 
 let loadPct = 0;
-// Make it load in ~1.5s
 const loaderInt = setInterval(() => {
   loadPct += Math.random() * 25; 
   if(loadPct >= 100) {
     loadPct = 100;
     clearInterval(loaderInt);
-    triggerAutoBoot();
+    
+    // Switch to "Click to Boot" state
+    sysText.textContent = "SYSTEM READY - AWAITING USER INPUT";
+    sysText.style.color = "var(--magenta)";
+    preBarContainer.style.display = "none";
+    bootBtn.style.display = "inline-flex";
   }
   preBarFill.style.width = loadPct + '%';
 }, 80);
 
-function triggerAutoBoot() {
-  // Lightning strike VFX & Audio (if browser permits)
+bootBtn.addEventListener('click', () => {
+  initAudio();
   lightningVFX.classList.add('strike');
+  sounds.lightning();
   
-  // Attempt to init audio and play lightning. It might fail if no prior user interaction, 
-  // but it's handled safely via the try/catch and the document.body.click listener above.
-  try { initAudio(); sounds.lightning(); } catch(e) {}
-
+  bootBtn.style.transform = 'scale(0.9)';
   setTimeout(() => {
     preloader.classList.add('unlocked');
     setTimeout(startTypewriter, 300);
     setTimeout(triggerBars, 800);
   }, 200);
-}
+});
 
 /* ─── CUSTOM CURSOR ─── */
 const cur = document.getElementById('cursor');
@@ -1072,15 +1179,44 @@ function renderCursor() {
 }
 renderCursor();
 
-/* ─── ATTACH SOUNDS TO ALL HOVERABLES ─── */
-document.querySelectorAll('.hoverable, a, button, input, select, textarea').forEach(el => {
+/* ─── SCROLL OBSERVER (MUTING TYPEWRITER) ─── */
+const heroSection = document.getElementById('hero');
+const heroObserver = new IntersectionObserver((entries) => {
+  isHeroVisible = entries[0].isIntersecting;
+}, { threshold: 0.1 });
+heroObserver.observe(heroSection);
+
+/* ─── ATTACH SOUNDS ─── */
+document.querySelectorAll('.hoverable, a, button, .faq-q').forEach(el => {
   el.addEventListener('mouseenter', sounds.hover);
-  if(el.tagName === 'A' || el.tagName === 'BUTTON') {
+  if(el.tagName === 'A' || el.tagName === 'BUTTON' || el.classList.contains('faq-q')) {
     el.addEventListener('click', sounds.click);
   }
 });
 
-/* ─── TYPEWRITER (Fixed Container prevents shaking) ─── */
+/* Form Interactions */
+let lastTypeTime = 0;
+document.querySelectorAll('.f-input').forEach(el => {
+  el.addEventListener('focus', sounds.formFocus);
+  
+  // High-tech typing sound
+  if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+    el.addEventListener('input', () => {
+      const now = Date.now();
+      if(now - lastTypeTime > 50) { // throttle to avoid clipping
+        sounds.formType();
+        lastTypeTime = now;
+      }
+    });
+  }
+  
+  // Dropdown sound
+  if(el.tagName === 'SELECT') {
+    el.addEventListener('change', sounds.formSelect);
+  }
+});
+
+/* ─── TYPEWRITER ─── */
 const words = ['CONVERT.', 'DOMINATE.', 'SCALE.', 'PERFORM.'];
 const twEl = document.getElementById('tw-text');
 let wordIdx = 0, charIdx = 0, isDeleting = false;
@@ -1113,6 +1249,14 @@ function triggerBars() {
   });
 }
 
+/* ─── FAQ ACCORDION ─── */
+document.querySelectorAll('.faq-q').forEach(question => {
+  question.addEventListener('click', () => {
+    const parent = question.parentElement;
+    parent.classList.toggle('active');
+  });
+});
+
 /* ─── AJAX FORM HANDLING ─── */
 const cyberForm = document.getElementById('cyberForm');
 const formSuccess = document.getElementById('formSuccess');
@@ -1120,11 +1264,10 @@ const submitBtnReal = document.getElementById('submitBtn');
 
 if(cyberForm) {
   cyberForm.addEventListener('submit', async function(e) {
-    e.preventDefault(); // Stop standard redirect
+    e.preventDefault(); 
     
     if(!this.checkValidity()) return;
 
-    // Visual loading state
     const originalText = submitBtnReal.textContent;
     submitBtnReal.textContent = 'TRANSMITTING...';
     submitBtnReal.style.background = 'var(--magenta)';
@@ -1132,7 +1275,6 @@ if(cyberForm) {
     submitBtnReal.disabled = true;
     
     try {
-      // Use Fetch API to submit without page reload
       const response = await fetch(this.action, {
         method: this.method,
         body: new FormData(this),
@@ -1142,15 +1284,13 @@ if(cyberForm) {
       if(response.ok) {
         sounds.success();
         formSuccess.classList.add('active');
-        this.reset(); // clear form
+        this.reset(); 
         
-        // Return button to normal after success
         submitBtnReal.textContent = 'INITIALIZE UPLOAD';
         submitBtnReal.style.background = 'var(--cyan)';
         submitBtnReal.style.color = 'var(--black)';
         submitBtnReal.disabled = false;
         
-        // Hide success message after 4 seconds
         setTimeout(() => { formSuccess.classList.remove('active'); }, 4000);
       } else {
         alert("Transmission Error: Data stream interrupted. Please try again.");
