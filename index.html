@@ -96,21 +96,47 @@ body:hover #cursor { opacity: 1; }
 .hud-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
 .hud-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
 
-/* ─── LOGO STYLING (ANIMATED AURA) ─── */
+/* ─── LOGO STYLING (DUAL-TONE LIQUID WAVE AURA) ─── */
 .magenta-text {
   color: var(--magenta);
+  position: relative;
   display: inline-block;
-  animation: auraGlow 2s ease-in-out infinite alternate, auraWave 4s linear infinite;
+  text-shadow: 0 0 15px var(--magenta);
 }
-@keyframes auraGlow {
-  0% { text-shadow: 0 0 10px var(--magenta), 0 0 20px var(--magenta); }
-  100% { text-shadow: 0 0 20px var(--magenta), 0 0 40px var(--magenta), 0 0 60px var(--magenta); color: #ff3366; }
+.magenta-text::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--cyan);
+  text-shadow: 0 0 15px var(--cyan);
+  clip-path: polygon(0% 45%, 15% 44%, 32% 50%, 54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%);
+  animation: fluidWave 3s ease-in-out infinite alternate;
 }
-@keyframes auraWave {
-  0%, 100% { transform: translateY(0) skewX(0); filter: hue-rotate(0deg); }
-  25% { transform: translateY(-1px) skewX(-2deg); filter: hue-rotate(15deg); }
-  75% { transform: translateY(1px) skewX(2deg); filter: hue-rotate(-15deg); }
+@keyframes fluidWave {
+  0% { clip-path: polygon(0% 45%, 15% 44%, 32% 50%, 54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%); }
+  100% { clip-path: polygon(0% 60%, 15% 65%, 34% 66%, 51% 62%, 67% 50%, 84% 45%, 100% 46%, 100% 100%, 0% 100%); }
 }
+
+/* ─── SYSTEM TERMINAL (LIVE LOGS) ─── */
+#cyber-terminal {
+  position: fixed; bottom: 30px; left: 30px; width: 300px; height: 180px;
+  background: rgba(3,4,7,0.85); border: 1px solid var(--border-dim); backdrop-filter: blur(5px);
+  z-index: 990; font-family: var(--font-hud); font-size: 0.8rem; color: var(--text-muted);
+  display: flex; flex-direction: column; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  box-shadow: 0 0 20px rgba(0,240,255,0.05); overflow: hidden;
+}
+.term-header {
+  background: rgba(0,240,255,0.1); padding: 8px 15px; color: var(--cyan);
+  border-bottom: 1px solid var(--border-dim); font-weight: bold; display: flex; justify-content: space-between; align-items: center;
+}
+.term-dot { width: 8px; height: 8px; background: var(--magenta); border-radius: 50%; animation: blink 1s infinite; box-shadow: 0 0 10px var(--magenta); }
+.term-body { padding: 15px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; gap: 6px; }
+.term-line { opacity: 0; animation: fadeLine 0.3s forwards; line-height: 1.4; }
+.term-cyan { color: var(--cyan); }
+.term-magenta { color: var(--magenta); }
+@keyframes fadeLine { to { opacity: 1; } }
+@media (max-width: 1200px) { #cyber-terminal { display: none; } }
 
 /* ─── SYSTEM INITIALIZATION (Preloader) ─── */
 #preloader {
@@ -271,6 +297,11 @@ h1 {
 @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* ─── PROTOCOLS (SERVICES) ─── */
+.hex-bg {
+  position: absolute; inset: 0; z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='103.92304845413264' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 103.92304845413264l-30-17.32050807568877v-34.64101615137755l30-17.32050807568877 30 17.32050807568877v34.64101615137755z' fill='none' stroke='rgba(0, 240, 255, 0.04)' stroke-width='1'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
 .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
 .cyber-card {
   background: linear-gradient(145deg, rgba(13, 17, 26, 0.8), rgba(7, 9, 14, 0.9));
@@ -385,11 +416,63 @@ h1 {
 .price-node.max .pn-btn.ghost { border-color: var(--magenta); color: var(--magenta); }
 .price-node.max .pn-btn.ghost:hover { background: var(--magenta); color: var(--white); box-shadow: 0 0 25px var(--magenta); }
 
+/* ─── LEAD MAGNET (FREE AUDIT) ─── */
+#audit-magnet {
+  background: linear-gradient(180deg, var(--black), var(--surface-panel), var(--black));
+  padding: 100px 5%; position: relative; border-top: 1px solid var(--border-dim); border-bottom: 1px solid var(--border-dim);
+  margin-top: 60px;
+}
+.audit-box {
+  max-width: 900px; margin: 0 auto; text-align: center; background: rgba(0, 240, 255, 0.03); 
+  border: 1px solid var(--cyan); padding: 60px; position: relative;
+  clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
+}
+.audit-glow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(0,240,255,0.15) 0%, transparent 60%); pointer-events: none; }
+.audit-form-row { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; position: relative; z-index: 2; margin-top: 30px; }
+
+/* ─── CYBER EXIT MODAL ─── */
+#cyberModal {
+  position: fixed; inset: 0; background: rgba(3,4,7,0.9); backdrop-filter: blur(10px); z-index: 100000;
+  display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.4s;
+  padding: 20px;
+}
+#cyberModal.active { opacity: 1; visibility: visible; }
+.modal-box {
+  max-width: 600px; width: 100%; background: var(--surface-panel); border: 1px solid var(--magenta); padding: 50px;
+  position: relative; box-shadow: 0 0 40px rgba(255,0,60,0.2);
+  clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+  text-align: center;
+}
+.modal-close {
+  position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: var(--magenta);
+  font-size: 2rem; cursor: none; transition: 0.3s;
+}
+.modal-close:hover { text-shadow: 0 0 15px var(--magenta); transform: scale(1.2); }
+
+/* ─── GLOBAL TOAST NOTIFICATION ─── */
+#cyberToast {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--cyan); color: var(--black); padding: 18px 40px;
+  font-family: var(--font-display); font-weight: 800; z-index: 100005; opacity: 0; transition: 0.4s;
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  box-shadow: 0 0 30px var(--cyan); text-transform: uppercase; letter-spacing: 2px;
+}
+#cyberToast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
 /* ─── ORIGIN (ABOUT) ─── */
 .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: center; }
 .abt-img-box { position: relative; padding: 20px; }
 .abt-frame { position: relative; z-index: 2; border: 2px solid var(--cyan); clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); padding: 10px; background: rgba(0,240,255,0.05); }
-.abt-frame img { width: 100%; display: block; clip-path: polygon(25px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%, 0 25px); filter: grayscale(20%) contrast(120%); }
+.abt-frame img { width: 100%; display: block; clip-path: polygon(25px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%, 0 25px); filter: grayscale(20%) contrast(120%); transition: 0.3s; }
+.abt-frame:hover img { animation: imgGlitch 0.2s linear infinite; }
+@keyframes imgGlitch {
+  0% { transform: translate(0) skew(0deg); filter: hue-rotate(0deg); }
+  20% { transform: translate(-2px, 2px) skew(-2deg); filter: hue-rotate(90deg); }
+  40% { transform: translate(2px, -2px) skew(2deg); filter: hue-rotate(-90deg); }
+  60% { transform: translate(-2px, -2px) skew(-2deg); filter: hue-rotate(180deg); }
+  80% { transform: translate(2px, 2px) skew(2deg); filter: hue-rotate(-180deg); }
+  100% { transform: translate(0) skew(0deg); filter: hue-rotate(0deg); }
+}
 .abt-bg-glow { position: absolute; top: 10%; left: 10%; right: -10%; bottom: -10%; background: radial-gradient(circle, rgba(0,240,255,0.2) 0%, transparent 70%); z-index: 1; }
 .abt-badge { position: absolute; bottom: -20px; right: -20px; z-index: 3; background: var(--surface-dark); border: 1px solid var(--cyan); padding: 20px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
 .abt-badge h4 { font-family: var(--font-display); font-size: 2rem; color: var(--cyan); margin-bottom: 5px; }
@@ -423,14 +506,6 @@ h1 {
 
 .c-form-wrap { background: rgba(7, 9, 14, 0.8); border: 1px solid var(--cyan); padding: 50px; position: relative; backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(0,240,255,0.05); clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); }
 .c-form-wrap::before { content:''; position: absolute; top:0; left:0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--cyan), transparent); }
-
-/* Form Success UI overlaying form */
-.form-success { position: absolute; inset: 0; background: rgba(3,4,7,0.95); backdrop-filter: blur(15px); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; opacity: 0; visibility: hidden; transition: 0.4s; border: 1px solid var(--cyan); clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px); }
-.form-success.active { opacity: 1; visibility: visible; }
-.fs-icon { font-size: 4rem; color: var(--cyan); margin-bottom: 20px; text-shadow: 0 0 20px var(--cyan); animation: popScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-@keyframes popScale { 0% { transform: scale(0); } 100% { transform: scale(1); } }
-.fs-title { font-family: var(--font-display); font-size: 2.5rem; color: var(--white); margin-bottom: 15px; text-transform: uppercase; }
-.fs-text { font-family: var(--font-hud); font-size: 1.1rem; color: var(--cyan); }
 
 .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
 .f-grp { margin-bottom: 30px; position: relative; }
@@ -494,6 +569,7 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
   .f-grid { grid-template-columns: 1fr 1fr; }
   .f-row { grid-template-columns: 1fr; }
   .c-form-wrap { padding: 30px 20px; }
+  .audit-form-row { flex-direction: column; }
 }
 
 @media (max-width: 600px) {
@@ -505,6 +581,7 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
   .f-bottom { flex-direction: column; gap: 15px; text-align: center; }
   .log-card { width: 320px; padding: 25px; }
   .wa-float { bottom: 20px; right: 20px; width: 60px; height: 60px; }
+  .modal-box { padding: 40px 20px; }
 }
 
 /* MOBILE MENU */
@@ -529,19 +606,41 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 
+<!-- SYSTEM TERMINAL (Desktop Only) -->
+<div id="cyber-terminal">
+  <div class="term-header">SYS_TERMINAL <span class="term-dot"></span></div>
+  <div class="term-body" id="term-logs"></div>
+</div>
+
 <!-- PRELOADER (Requires Click for Audio) -->
 <div id="preloader">
-  <div class="sys-logo">DEEP<span class="magenta-text">AURA</span>_OS</div>
+  <div class="sys-logo">DEEP<span class="magenta-text" data-text="AURA">AURA</span>_OS</div>
   <div class="sys-text" id="sys-text-dynamic">Booting Core Modules...</div>
   <div class="pre-bar" id="pre-bar-container"><div class="pre-bar-fill" id="loadFill"></div></div>
   <button id="bootBtn" class="boot-btn hoverable">INITIATE SYSTEM</button>
+</div>
+
+<!-- GLOBAL CYBER TOAST -->
+<div id="cyberToast">DATA TRANSMITTED SUCCESSFULLY.</div>
+
+<!-- EXIT INTENT CYBER MODAL -->
+<div id="cyberModal">
+  <div class="modal-box">
+    <button id="closeModal" class="modal-close hoverable">×</button>
+    <h2 class="hud-title" style="border: none; padding: 0; font-size: 2rem; color: var(--magenta); text-shadow: 0 0 10px var(--magenta); margin-bottom: 10px;">CONNECTION TERMINATING?</h2>
+    <p style="color: var(--white); font-size: 1.1rem; margin-bottom: 25px;">Before you disconnect, download our <strong>Free 2026 Growth Protocol</strong>. Learn the exact architecture we use to generate 8.8x ROAS for our clients.</p>
+    <form action="https://formspree.io/f/xldnzeab" method="POST" class="ajax-form" style="display: flex; flex-direction: column; gap: 15px;">
+      <input type="email" name="lead_magnet_email" class="f-input hoverable" placeholder="Enter Comms Email" required>
+      <button type="submit" class="btn-main hoverable" style="background: var(--magenta); box-shadow: 0 0 20px var(--magenta); width: 100%;">Secure Protocol Data</button>
+    </form>
+  </div>
 </div>
 
 <!-- NAV -->
 <nav id="nav">
   <a href="#" class="nav-logo hoverable">
     <div class="nav-logo-icon"></div>
-    Deep<span class="magenta-text">Aura</span>
+    Deep<span class="magenta-text" data-text="Aura">Aura</span>
   </a>
   <div class="nav-links">
     <a href="#services" class="hoverable">Protocols</a>
@@ -632,6 +731,7 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
 
 <!-- SERVICES -->
 <section id="services">
+  <div class="hex-bg"></div>
   <h2 class="hud-title">Core <span>Protocols</span></h2>
   <p class="hud-subtitle">Data-driven services designed to capture market share and maximize capital extraction.</p>
   
@@ -890,6 +990,20 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
   </div>
 </section>
 
+<!-- LEAD MAGNET / AUDIT -->
+<section id="audit" style="background: linear-gradient(180deg, var(--black), var(--surface-dark), var(--black)); padding: 80px 5%; border-top: 1px solid var(--border-dim); border-bottom: 1px solid var(--border-dim); margin: 60px auto;">
+  <div class="audit-box">
+    <div class="audit-glow"></div>
+    <h2 class="hud-title" style="border: none; padding: 0;">Claim Your Free <span>System Audit</span></h2>
+    <p class="hud-subtitle" style="margin: 0 auto 30px; text-align: center;">Drop your current URL below. Our AI and lead architects will scan your site for conversion leaks and send you a video breakdown within 24 hours.</p>
+    <form action="https://formspree.io/f/xldnzeab" method="POST" class="ajax-form audit-form-row">
+      <input type="url" name="audit_url" class="f-input hoverable" placeholder="https://yourdomain.com" required style="flex: 1; min-width: 250px;">
+      <input type="email" name="audit_email" class="f-input hoverable" placeholder="Comms Email" required style="flex: 1; min-width: 250px;">
+      <button type="submit" class="btn-main hoverable" style="padding: 18px 30px; clip-path: none;">Scan My Setup</button>
+    </form>
+  </div>
+</section>
+
 <!-- ABOUT / ORIGIN -->
 <section id="about">
   <div class="about-grid">
@@ -931,19 +1045,19 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
   
   <div class="faq-container">
     <div class="faq-item">
-      <div class="faq-q">What is the typical deployment timeline?</div>
+      <div class="faq-q hoverable">What is the typical deployment timeline?</div>
       <div class="faq-a">For standard web architecture builds, our average deployment is 5 to 7 days. Full-scale Growth Engine deployments (ads, social, content) are mapped out during the first week and activate immediately thereafter.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Do you require long-term contracts?</div>
+      <div class="faq-q hoverable">Do you require long-term contracts?</div>
       <div class="faq-a">No. We operate on a month-to-month protocol. We retain our clients by generating brutal ROI and consistent results, not by locking them into legal constraints.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">How do you track campaign success?</div>
+      <div class="faq-q hoverable">How do you track campaign success?</div>
       <div class="faq-a">We rely on strict data telemetry. Every deployment includes Meta Pixel integration, Google Analytics 4, and server-side tracking to trace every dollar back to its origin.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">What if I need a custom architecture?</div>
+      <div class="faq-q hoverable">What if I need a custom architecture?</div>
       <div class="faq-a">Our outlined tiers cover 90% of business needs. However, if your operation requires custom app development, specialized API integrations, or massive ad spend management, select "Custom Architecture" in the Comms form.</div>
     </div>
   </div>
@@ -973,14 +1087,7 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
     </div>
 
     <div class="c-form-wrap">
-      <!-- Success UI (AJAX trigger) -->
-      <div class="form-success" id="formSuccess">
-        <div class="fs-icon">✓</div>
-        <div class="fs-title">Data Transmitted</div>
-        <div class="fs-text">Parameters received successfully. Awaiting admin response.</div>
-      </div>
-
-      <form id="cyberForm" action="https://formspree.io/f/xldnzeab" method="POST">
+      <form action="https://formspree.io/f/xldnzeab" method="POST" class="ajax-form">
         <div class="f-row">
           <div class="f-grp hoverable">
             <label class="f-label">Entity Name</label>
@@ -993,13 +1100,19 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
         </div>
         
         <div class="f-row">
-          <div class="f-grp hoverable">
+          <div class="f-grp hoverable" style="grid-column: span 1;">
             <label class="f-label">Comms Terminal (Phone)</label>
-            <input type="tel" name="phone" class="f-input" required placeholder="+1 234 567 8900">
+            <div style="display: flex; gap: 10px;">
+              <select name="countryCode" id="countryCodeSelect" class="f-input hoverable" style="width: auto; padding-right: 10px; flex-shrink: 0; min-width: 100px;">
+                <option value="+91" selected>+91 (IN)</option>
+                <!-- Javascript will inject 240+ codes here -->
+              </select>
+              <input type="tel" name="phone" class="f-input" required placeholder="234 567 8900" style="flex-grow: 1;">
+            </div>
           </div>
           <div class="f-grp hoverable">
             <label class="f-label">Required Protocol</label>
-            <select name="service" class="f-input" required>
+            <select name="service" class="f-input hoverable" required>
               <option value="" disabled selected>Select Module...</option>
               <option value="Growth Engine">Growth Engine (Ads + Social)</option>
               <option value="Web Architecture">High-Velocity Website</option>
@@ -1014,7 +1127,7 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
           <textarea name="message" class="f-input" required placeholder="Detail your current bottlenecks..."></textarea>
         </div>
 
-        <button type="submit" class="btn-main hoverable" id="submitBtn" style="width:100%;">Initialize Upload</button>
+        <button type="submit" class="btn-main hoverable" style="width:100%;">Initialize Upload</button>
       </form>
     </div>
   </div>
@@ -1024,7 +1137,7 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
 <footer>
   <div class="f-grid">
     <div>
-      <a href="#" class="f-logo hoverable"><div class="nav-logo-icon" style="display:inline-block; margin-right:10px;"></div>Deep<span class="magenta-text">Aura</span></a>
+      <a href="#" class="f-logo hoverable"><div class="nav-logo-icon" style="display:inline-block; margin-right:10px;"></div>Deep<span class="magenta-text" data-text="Aura">Aura</span></a>
       <p class="f-desc">Next-generation digital architectures engineered to dominate markets and extract maximum capital.</p>
     </div>
     <div>
@@ -1070,7 +1183,13 @@ footer { border-top: 1px solid var(--border-dim); padding: 80px 5% 40px; backgro
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let aCtx = null;
 let soundEnabled = true;
-let isHeroVisible = true; // For typewriter sound toggling
+let isHeroVisible = true; 
+
+document.body.addEventListener('click', () => {
+  if (!aCtx || aCtx.state === 'suspended') {
+    initAudio();
+  }
+}, { once: true });
 
 function initAudio() {
   if (!aCtx) { aCtx = new AudioContext(); }
@@ -1124,7 +1243,8 @@ const sounds = {
   },
   formFocus: () => playSynth(800, 'sine', 0.05, 0.03),
   formType: () => playSynth(2500, 'square', 0.01, 0.01),
-  formSelect: () => { playSynth(1200, 'triangle', 0.1, 0.05); }
+  formSelect: () => { playSynth(1200, 'triangle', 0.1, 0.05); },
+  alert: () => playSynth(300, 'sawtooth', 0.5, 0.1)
 };
 
 /* ─── SYSTEM INITIALIZATION (Click to Boot) ─── */
@@ -1141,8 +1261,6 @@ const loaderInt = setInterval(() => {
   if(loadPct >= 100) {
     loadPct = 100;
     clearInterval(loaderInt);
-    
-    // Switch to "Click to Boot" state
     sysText.textContent = "SYSTEM READY - AWAITING USER INPUT";
     sysText.style.color = "var(--magenta)";
     preBarContainer.style.display = "none";
@@ -1163,6 +1281,77 @@ bootBtn.addEventListener('click', () => {
     setTimeout(triggerBars, 800);
   }, 200);
 });
+
+/* ─── LIVE TERMINAL LOGS ─── */
+const terminalLines = [
+  "[SYS] Injecting Meta Pixel protocols...",
+  "[NODE] Re-routing server requests...",
+  "[DATA] Compiling audience matrices.",
+  "[STATUS] Architecture securely deployed.",
+  "[AI] Scanning for capital extraction vectors...",
+  "WARNING: Competitor intrusion blocked.",
+  "[WEB] Compressing DOM architecture. Latency -80%",
+  "[SYS] 14 new leads acquired. Standby.",
+  "[SEO] Crawling index structures...",
+  "[DATA] Neural network syncing complete."
+];
+const termLogs = document.getElementById('term-logs');
+
+if(termLogs) {
+  setInterval(() => {
+    if(Math.random() > 0.3) {
+      const newLine = document.createElement('div');
+      newLine.className = 'term-line';
+      const text = terminalLines[Math.floor(Math.random() * terminalLines.length)];
+      if(text.includes('WARNING')) newLine.classList.add('term-magenta');
+      else if(text.includes('[SYS]')) newLine.classList.add('term-cyan');
+      newLine.textContent = `> ${text}`;
+      termLogs.appendChild(newLine);
+      termLogs.scrollTop = termLogs.scrollHeight;
+      
+      // Keep only last 8 lines
+      if(termLogs.children.length > 8) {
+        termLogs.removeChild(termLogs.firstChild);
+      }
+    }
+  }, 2500);
+}
+
+/* ─── COMPREHENSIVE COUNTRY CODE GENERATOR ─── */
+const countryCodeData = [
+  "+1 (US/CA)","+44 (UK)","+91 (IN)","+61 (AU)","+81 (JP)","+49 (DE)",
+  "+33 (FR)","+86 (CN)","+55 (BR)","+7 (RU)","+39 (IT)","+27 (ZA)",
+  "+971 (AE)","+34 (ES)","+82 (KR)","+52 (MX)","+31 (NL)","+41 (NL)",
+  "+46 (CH)","+65 (KR)","+62 (SG)","+353 (IE)","+45 (SE)","+47 (DK)",
+  "+48 (PL)","+32 (BE)","+43 (BE)","+966 (SA)","+64 (NZ)","+351 (IE)",
+  "+358 (FI)","+380 (UA)","+420 (AT)","+90 (TR)","+92 (PK)","+880 (BD)",
+  "+63 (ID)","+60 (MY)","+84 (VN)","+66 (TH)","+54 (AR)","+56 (AR)",
+  "+57 (CL)","+58 (CO)","+51 (PE)","+53 (VE)","+20 (EG)","+212 (MA)",
+  "+234 (NG)","+254 (KE)","+233 (GH)","+255 (TZ)","+256 (TZ)","+260 (UG)",
+  "+94 (LK)","+977 (LK)","+95 (MM)","+855 (MM)","+856 (KH)","+976 (NP)",
+  "+355 (AL)","+376 (AD)","+374 (AM)","+375 (AM)","+994 (BY)","+387 (BA)",
+  "+385 (BA)","+359 (BG)","+385 (HR)","+357 (BG)","+386 (SI)","+421 (CZ)",
+  "+372 (SK)","+36 (HU)","+40 (RO)","+373 (RO)","+381 (RS)","+382 (ME)",
+  "+389 (MK)","+30 (GR)","+357 (CY)","+356 (MT)","+354 (MT)","+352 (LU)",
+  "+370 (EE)","+371 (LT)","+372 (LV)","+995 (GE)","+996 (MN)","+998 (KG)",
+  "+992 (UZ)","+993 (TJ)","+994 (AZ)","+973 (BH)","+968 (OM)","+974 (QA)",
+  "+965 (QA)","+964 (KW)","+962 (JO)","+961 (LB)","+963 (SY)","+961 (LB)",
+  "+98 (IR)","+964 (IQ)","+93 (AF)","+975 (BT)","+960 (MV)"
+];
+
+const countrySelect = document.getElementById('countryCodeSelect');
+if(countrySelect) {
+  // Clear hardcoded except IN placeholder to build dynamic list
+  countrySelect.innerHTML = ''; 
+  const sortedCodes = [...new Set(countryCodeData)].sort();
+  sortedCodes.forEach(code => {
+    const opt = document.createElement('option');
+    opt.value = code.split(' ')[0]; // extracts just the "+XX"
+    opt.textContent = code;
+    if(code.includes('+91')) opt.selected = true; // Default India
+    countrySelect.appendChild(opt);
+  });
+}
 
 /* ─── CUSTOM CURSOR ─── */
 const cur = document.getElementById('cursor');
@@ -1186,6 +1375,31 @@ const heroObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 heroObserver.observe(heroSection);
 
+/* ─── EXIT INTENT CYBER MODAL ─── */
+let modalTriggered = false;
+const cyberModal = document.getElementById('cyberModal');
+const closeModalBtn = document.getElementById('closeModal');
+
+document.addEventListener('mouseout', (e) => {
+  if (e.clientY < 10 && !modalTriggered) {
+    cyberModal.classList.add('active');
+    modalTriggered = true;
+    sounds.alert();
+  }
+});
+
+closeModalBtn.addEventListener('click', () => {
+  cyberModal.classList.remove('active');
+});
+
+setTimeout(() => {
+  if(!modalTriggered) {
+    cyberModal.classList.add('active');
+    modalTriggered = true;
+    sounds.alert();
+  }
+}, 45000);
+
 /* ─── ATTACH SOUNDS ─── */
 document.querySelectorAll('.hoverable, a, button, .faq-q').forEach(el => {
   el.addEventListener('mouseenter', sounds.hover);
@@ -1194,23 +1408,18 @@ document.querySelectorAll('.hoverable, a, button, .faq-q').forEach(el => {
   }
 });
 
-/* Form Interactions */
 let lastTypeTime = 0;
 document.querySelectorAll('.f-input').forEach(el => {
   el.addEventListener('focus', sounds.formFocus);
-  
-  // High-tech typing sound
   if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
     el.addEventListener('input', () => {
       const now = Date.now();
-      if(now - lastTypeTime > 50) { // throttle to avoid clipping
+      if(now - lastTypeTime > 50) { 
         sounds.formType();
         lastTypeTime = now;
       }
     });
   }
-  
-  // Dropdown sound
   if(el.tagName === 'SELECT') {
     el.addEventListener('change', sounds.formSelect);
   }
@@ -1257,18 +1466,18 @@ document.querySelectorAll('.faq-q').forEach(question => {
   });
 });
 
-/* ─── AJAX FORM HANDLING ─── */
-const cyberForm = document.getElementById('cyberForm');
-const formSuccess = document.getElementById('formSuccess');
-const submitBtnReal = document.getElementById('submitBtn');
+/* ─── GLOBAL AJAX FORM HANDLING ─── */
+const cyberToast = document.getElementById('cyberToast');
 
-if(cyberForm) {
-  cyberForm.addEventListener('submit', async function(e) {
+document.querySelectorAll('.ajax-form').forEach(form => {
+  form.addEventListener('submit', async function(e) {
     e.preventDefault(); 
     
     if(!this.checkValidity()) return;
 
+    const submitBtnReal = this.querySelector('button[type="submit"]');
     const originalText = submitBtnReal.textContent;
+    
     submitBtnReal.textContent = 'TRANSMITTING...';
     submitBtnReal.style.background = 'var(--magenta)';
     submitBtnReal.style.color = 'var(--white)';
@@ -1283,15 +1492,28 @@ if(cyberForm) {
       
       if(response.ok) {
         sounds.success();
-        formSuccess.classList.add('active');
+        
+        cyberToast.classList.add('show');
+        
+        if(this.closest('#cyberModal')) {
+           cyberModal.classList.remove('active');
+        }
+        
+        // Handle specific success modal if exists in this block
+        const formSuccessOverlay = this.parentElement.querySelector('.form-success');
+        if(formSuccessOverlay) formSuccessOverlay.classList.add('active');
+
         this.reset(); 
         
-        submitBtnReal.textContent = 'INITIALIZE UPLOAD';
-        submitBtnReal.style.background = 'var(--cyan)';
-        submitBtnReal.style.color = 'var(--black)';
+        submitBtnReal.textContent = originalText;
+        submitBtnReal.style.background = '';
+        submitBtnReal.style.color = '';
         submitBtnReal.disabled = false;
         
-        setTimeout(() => { formSuccess.classList.remove('active'); }, 4000);
+        setTimeout(() => { 
+          cyberToast.classList.remove('show'); 
+          if(formSuccessOverlay) formSuccessOverlay.classList.remove('active');
+        }, 4000);
       } else {
         alert("Transmission Error: Data stream interrupted. Please try again.");
         submitBtnReal.textContent = originalText;
@@ -1303,7 +1525,7 @@ if(cyberForm) {
       submitBtnReal.disabled = false;
     }
   });
-}
+});
 
 /* ─── NAV SCROLL & MOBILE MENU ─── */
 window.addEventListener('scroll', () => { document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50); });
