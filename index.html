@@ -292,8 +292,16 @@ h1 {
   margin-bottom: 28px;
   opacity: 0; animation: fadeUp 0.9s ease forwards 0.4s;
 }
-h1 .line { display: block; overflow: hidden; }
-h1 em { font-style: normal; color: var(--teal); position: relative; }
+h1 .line { display: block; }
+h1 .line-clip { display: block; overflow: hidden; }
+h1 em {
+  font-style: normal;
+  color: var(--teal);
+  position: relative;
+  display: inline-block;
+  min-width: 280px;
+  vertical-align: bottom;
+}
 h1 em::after {
   content: '';
   position: absolute; bottom: 4px; left: 0; right: 0; height: 3px;
@@ -433,67 +441,223 @@ h1 .gold { color: var(--amber); }
 }
 .section-desc { font-size: 1rem; color: var(--muted); max-width: 480px; line-height: 1.7; }
 
-.services-grid {
+/* BENTO GRID */
+.services-bento {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  background: var(--border);
-  border-radius: 16px;
-  overflow: hidden;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  gap: 16px;
 }
 
-.service-card {
-  background: var(--surface);
-  padding: 36px 32px;
+.sc {
   position: relative;
-  transition: background 0.3s;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
+  transition: border-color 0.4s, transform 0.3s, box-shadow 0.4s;
+  padding: 32px;
 }
-.service-card::after {
+.sc:hover {
+  border-color: rgba(0,220,182,0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(0,220,182,0.06);
+}
+
+/* Grid placement */
+.sc-hero  { grid-column: span 5; grid-row: span 2; padding: 44px; }
+.sc-wide  { grid-column: span 7; }
+.sc-mid   { grid-column: span 4; }
+.sc-third { grid-column: span 3; }
+
+/* Scan-line overlay */
+.sc::before {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(0,220,182,0.06), transparent 60%);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,220,182,0.015) 2px,
+    rgba(0,220,182,0.015) 4px
+  );
+  pointer-events: none;
   opacity: 0;
   transition: opacity 0.4s;
 }
-.service-card:hover::after { opacity: 1; }
-.service-card:hover { background: var(--surface2); }
+.sc:hover::before { opacity: 1; }
 
-.service-icon {
-  width: 48px; height: 48px;
+/* Glow spotlight */
+.sc::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(0,220,182,0.07), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.sc:hover::after { opacity: 1; }
+
+/* Corner decoration */
+.sc-corner {
+  position: absolute; top: 0; right: 0;
+  width: 60px; height: 60px;
+  overflow: hidden;
+}
+.sc-corner::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 1px; height: 60px;
+  background: linear-gradient(180deg, rgba(0,220,182,0.3), transparent);
+}
+.sc-corner::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 60px; height: 1px;
+  background: linear-gradient(270deg, rgba(0,220,182,0.3), transparent);
+}
+
+.sc-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--teal);
+  background: var(--teal-dim);
+  border: 1px solid rgba(0,220,182,0.15);
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+}
+
+.sc-icon-wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.sc-icon {
+  width: 52px; height: 52px;
   display: flex; align-items: center; justify-content: center;
   background: var(--teal-dim);
   border: 1px solid rgba(0,220,182,0.15);
-  border-radius: 12px;
-  margin-bottom: 20px;
+  border-radius: 14px;
   color: var(--teal);
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s, background 0.3s;
 }
-.service-card:hover .service-icon { box-shadow: 0 0 20px rgba(0,220,182,0.2); }
+.sc:hover .sc-icon {
+  box-shadow: 0 0 30px rgba(0,220,182,0.25);
+  background: rgba(0,220,182,0.18);
+}
 
-.service-name {
+.sc-arrow {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--muted);
+  transition: border-color 0.3s, color 0.3s, transform 0.3s;
+}
+.sc:hover .sc-arrow { border-color: var(--teal); color: var(--teal); transform: rotate(-45deg); }
+
+.sc-name {
   font-family: var(--display);
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 800;
   color: var(--white);
-  margin-bottom: 8px;
   letter-spacing: -0.5px;
+  margin-bottom: 10px;
+  line-height: 1.2;
 }
-.service-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
-.service-price {
+.sc-hero .sc-name { font-size: 1.7rem; letter-spacing: -1px; margin-bottom: 14px; }
+
+.sc-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+.sc-hero .sc-desc { font-size: 0.95rem; margin-bottom: 28px; }
+
+.sc-price {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--teal);
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 
-.service-arrow {
-  position: absolute; top: 28px; right: 28px;
-  color: var(--border);
-  transition: color 0.3s, transform 0.3s;
+/* Hero card big number */
+.sc-big-num {
+  font-family: var(--display);
+  font-size: 5rem;
+  font-weight: 800;
+  color: rgba(0,220,182,0.08);
+  letter-spacing: -4px;
+  line-height: 1;
+  position: absolute;
+  bottom: 28px; right: 28px;
+  pointer-events: none;
+  transition: color 0.4s;
 }
-.service-card:hover .service-arrow { color: var(--teal); transform: translate(4px,-4px); }
+.sc:hover .sc-big-num { color: rgba(0,220,182,0.12); }
+
+/* Amber accent card */
+.sc-amber {
+  background: linear-gradient(135deg, rgba(240,165,0,0.08), var(--surface));
+  border-color: rgba(240,165,0,0.15);
+}
+.sc-amber:hover { border-color: rgba(240,165,0,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(240,165,0,0.06); }
+.sc-amber .sc-icon { background: rgba(240,165,0,0.1); border-color: rgba(240,165,0,0.2); color: var(--amber); }
+.sc-amber:hover .sc-icon { box-shadow: 0 0 30px rgba(240,165,0,0.2); background: rgba(240,165,0,0.2); }
+.sc-amber .sc-tag { color: var(--amber); background: rgba(240,165,0,0.08); border-color: rgba(240,165,0,0.15); }
+.sc-amber .sc-price { color: var(--amber); }
+.sc-amber:hover .sc-arrow { border-color: var(--amber); color: var(--amber); }
+.sc-amber::after { background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(240,165,0,0.07), transparent 55%); }
+.sc-amber::before { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(240,165,0,0.012) 2px, rgba(240,165,0,0.012) 4px); }
+
+/* Live badge */
+.sc-live {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #4ade80;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(74,222,128,0.1);
+  border: 1px solid rgba(74,222,128,0.2);
+}
+.sc-live-dot { width: 4px; height: 4px; background: #4ade80; border-radius: 50%; animation: pulse 1.5s infinite; }
+
+/* Mini stat inside card */
+.sc-mini-stats {
+  display: flex; gap: 16px;
+  margin-bottom: 20px;
+}
+.sc-mini-stat { }
+.sc-mini-num {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.sc-mini-num span { color: var(--teal); font-size: 1rem; }
+.sc-mini-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+@media (max-width: 900px) {
+  .services-bento { grid-template-columns: 1fr 1fr; }
+  .sc-hero, .sc-wide, .sc-mid, .sc-third { grid-column: span 2; }
+}
+@media (max-width: 540px) {
+  .services-bento { grid-template-columns: 1fr; }
+  .sc-hero, .sc-wide, .sc-mid, .sc-third { grid-column: span 1; }
+  .sc-hero .sc-name { font-size: 1.3rem; }
+}
 
 /* ─── RESULTS ─── */
 #results {
@@ -772,6 +936,7 @@ h1 .gold { color: var(--amber); }
 
 .about-img-wrap {
   position: relative;
+  padding: 24px 24px 40px 24px;
 }
 .about-img-frame {
   position: relative;
@@ -779,11 +944,13 @@ h1 .gold { color: var(--amber); }
   overflow: hidden;
   aspect-ratio: 4/5;
   background: var(--surface2);
+  border: 1px solid var(--border);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
 }
 .about-img-frame::before {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 60%, var(--black));
+  background: linear-gradient(180deg, transparent 60%, rgba(7,9,15,0.85));
   z-index: 1;
 }
 .about-img-frame img {
@@ -792,37 +959,51 @@ h1 .gold { color: var(--amber); }
   display: block;
 }
 
+/* Teal glow border behind image */
+.about-img-wrap::before {
+  content: '';
+  position: absolute;
+  top: 10px; left: 10px; right: 10px; bottom: 30px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(0,220,182,0.15), rgba(240,165,0,0.08));
+  z-index: -1;
+  filter: blur(1px);
+}
+
 .about-badge {
   position: absolute;
-  bottom: -20px; right: -20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px 24px;
-  z-index: 2;
+  bottom: 14px; right: 4px;
+  background: rgba(13,17,23,0.95);
+  border: 1px solid rgba(0,220,182,0.25);
+  border-radius: 14px;
+  padding: 16px 20px;
+  z-index: 3;
   backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 .about-badge-num {
   font-family: var(--display);
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 800;
   color: var(--teal);
   letter-spacing: -1px;
 }
-.about-badge-label { font-size: 0.75rem; color: var(--muted); }
+.about-badge-label { font-size: 0.72rem; color: var(--muted); }
 
 .about-corner {
   position: absolute;
-  top: -16px; left: -16px;
+  top: 10px; left: 10px;
   background: var(--teal);
   color: var(--black);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 8px;
+  padding: 8px 14px;
   font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 1px;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
   font-weight: 700;
+  z-index: 3;
+  box-shadow: 0 4px 16px rgba(0,220,182,0.3);
 }
 
 .about-text .section-title { margin-bottom: 24px; }
@@ -1006,6 +1187,219 @@ footer {
 .reveal-delay-3 { transition-delay: 0.3s; }
 .reveal-delay-4 { transition-delay: 0.4s; }
 
+/* ─── WHATSAPP BUTTON ─── */
+.contact-link-wa {
+  background: linear-gradient(135deg, rgba(37,211,102,0.12), rgba(18,140,126,0.08)) !important;
+  border-color: rgba(37,211,102,0.35) !important;
+  color: #25d366 !important;
+  position: relative;
+  overflow: hidden;
+}
+.contact-link-wa svg { color: #25d366 !important; }
+.contact-link-wa:hover {
+  background: linear-gradient(135deg, rgba(37,211,102,0.22), rgba(18,140,126,0.15)) !important;
+  border-color: #25d366 !important;
+  color: #fff !important;
+  box-shadow: 0 0 30px rgba(37,211,102,0.25) !important;
+}
+
+/* ─── PARTICLES ─── */
+#particles-canvas {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── GLITCH LOGO ─── */
+.nav-logo-text {
+  position: relative;
+  display: inline-block;
+}
+.nav-logo-text::before, .nav-logo-text::after {
+  content: 'DeepAura';
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+}
+.nav-logo-text::before {
+  color: var(--teal);
+  clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+  transform: translateX(-2px);
+  animation: glitch1 6s infinite linear;
+}
+.nav-logo-text::after {
+  color: var(--amber);
+  clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+  transform: translateX(2px);
+  animation: glitch2 6s infinite linear;
+}
+@keyframes glitch1 {
+  0%, 92%, 100% { transform: translateX(0); opacity: 0; }
+  93% { transform: translateX(-3px); opacity: 0.7; }
+  95% { transform: translateX(3px); opacity: 0.7; }
+}
+@keyframes glitch2 {
+  0%, 92%, 100% { transform: translateX(0); opacity: 0; }
+  94% { transform: translateX(3px); opacity: 0.6; }
+  96% { transform: translateX(-3px); opacity: 0.6; }
+}
+
+/* ─── HOLOGRAPHIC SHIMMER ─── */
+.pricing-card.featured {
+  background: linear-gradient(135deg, rgba(0,220,182,0.1), rgba(240,165,0,0.04), var(--surface));
+  box-shadow: 0 0 60px rgba(0,220,182,0.1), 0 0 0 1px var(--teal);
+  position: relative;
+  overflow: hidden;
+}
+.pricing-card.featured::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(0,220,182,0.06) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: holoShimmer 3s ease infinite;
+  pointer-events: none;
+}
+@keyframes holoShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── ANIMATED BORDER ON HOVER ─── */
+.sc, .pricing-card, .contact-form {
+  position: relative;
+}
+
+/* ─── FLOATING WHATSAPP CTA ─── */
+.wa-float {
+  position: fixed;
+  bottom: 32px; right: 32px;
+  z-index: 500;
+  width: 58px; height: 58px;
+  background: linear-gradient(135deg, #25d366, #128C7E);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 0 40px rgba(37,211,102,0.15);
+  text-decoration: none;
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: waPulse 2.5s ease-in-out infinite;
+}
+.wa-float:hover {
+  transform: scale(1.12) rotate(-5deg);
+  box-shadow: 0 8px 32px rgba(37,211,102,0.55), 0 0 60px rgba(37,211,102,0.2);
+}
+.wa-float svg { color: white; }
+.wa-float-tooltip {
+  position: absolute;
+  right: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(7,9,15,0.95);
+  border: 1px solid rgba(37,211,102,0.3);
+  color: #fff;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  backdrop-filter: blur(10px);
+}
+.wa-float:hover .wa-float-tooltip { opacity: 1; }
+@keyframes waPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0.3); }
+  50% { box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 0 0 14px rgba(37,211,102,0); }
+}
+
+/* ─── CYBER TICKER ─── */
+.cyber-ticker {
+  background: var(--surface);
+  border-top: 1px solid rgba(240,165,0,0.1);
+  border-bottom: 1px solid rgba(240,165,0,0.1);
+  padding: 12px 0;
+  overflow: hidden;
+}
+.cyber-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: tickerScroll 22s linear infinite;
+  gap: 60px;
+  align-items: center;
+}
+.cyber-ticker-item {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+}
+.tick-val { color: var(--teal); font-weight: 700; }
+.tick-label { color: var(--muted); }
+@keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ─── SECTION CYBER DIVIDER ─── */
+.cyber-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,220,182,0.3), rgba(240,165,0,0.2), rgba(0,220,182,0.3), transparent);
+  position: relative;
+  margin: 0;
+}
+.cyber-divider::before {
+  content: '◆';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 7px;
+  color: var(--teal);
+  background: var(--black);
+  padding: 0 8px;
+}
+
+/* ─── PRELOADER ENHANCEMENT ─── */
+.pre-sub {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 5px;
+  color: var(--teal);
+  margin-top: 18px;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards 1s;
+}
+.pre-pct {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 8px;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards 1.3s;
+}
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* ─── HERO SCAN LINES ─── */
+.hero-scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0,220,182,0.008) 3px,
+    rgba(0,220,182,0.008) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── NEON GLOW on stat numbers ─── */
+.stat-num { text-shadow: 0 0 20px rgba(0,220,182,0.2); }
+.stat-num span { text-shadow: 0 0 15px rgba(0,220,182,0.4); }
+
+/* ─── ENHANCED HERO BLOBS ─── */
+.blob-4 { width: 500px; height: 500px; background: rgba(120,0,255,0.03); top: 50%; left: 20%; animation: blobFloat 14s ease-in-out infinite 4s; }
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
   nav { padding: 16px 24px; }
@@ -1018,6 +1412,7 @@ footer {
   #hero { padding: 100px 24px 60px; }
 
   h1 { font-size: clamp(2.5rem, 10vw, 4rem); letter-spacing: -2px; }
+  h1 em { min-width: 180px; }
   .hero-stats { grid-template-columns: 1fr; }
   .hero-stat { border-right: none; border-bottom: 1px solid var(--border); }
   .hero-stat:last-child { border-bottom: none; }
@@ -1041,6 +1436,7 @@ footer {
   .footer-inner { grid-template-columns: 1fr; }
   .process-steps { grid-template-columns: 1fr; }
   .about-badge { right: 0; bottom: -10px; }
+  h1 em { min-width: 140px; }
 }
 </style>
 </head>
@@ -1055,18 +1451,23 @@ footer {
   <div class="pre-logo">
     <span style="animation-delay:0.0s">D</span><span style="animation-delay:0.05s">e</span><span style="animation-delay:0.10s">e</span><span style="animation-delay:0.15s">p</span><span style="animation-delay:0.20s">A</span><span style="animation-delay:0.25s">u</span><span style="animation-delay:0.30s">r</span><span style="animation-delay:0.35s">a</span>
   </div>
+  <div class="pre-sub">Digital Growth Agency</div>
   <div class="pre-bar"><div class="pre-bar-fill"></div></div>
+  <div class="pre-pct" id="preLoadPct">0%</div>
 </div>
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#" class="nav-logo"><div class="nav-logo-dot"></div>DeepAura</a>
+  <a href="#" class="nav-logo"><div class="nav-logo-dot"></div><span class="nav-logo-text">DeepAura</span></a>
   <div class="nav-links">
     <a href="#services">Services</a>
     <a href="#results">Results</a>
     <a href="#process">Process</a>
     <a href="#pricing">Pricing</a>
     <a href="#about">About</a>
+    <a href="https://www.linkedin.com/in/md-rahaman-5a40a1180/" target="_blank" style="display:flex;align-items:center;gap:5px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+    </a>
   </div>
   <a href="#contact" class="nav-cta">Start a Project →</a>
   <div class="nav-hamburger" id="hamburger">
@@ -1088,9 +1489,12 @@ footer {
 <section id="hero">
   <div class="hero-bg">
     <div class="hero-grid"></div>
+    <div class="hero-scanlines"></div>
+    <canvas id="particles-canvas"></canvas>
     <div class="hero-blob blob-1"></div>
     <div class="hero-blob blob-2"></div>
     <div class="hero-blob blob-3"></div>
+    <div class="hero-blob blob-4"></div>
   </div>
 
   <div class="hero-inner">
@@ -1146,87 +1550,163 @@ footer {
   <div class="strip-track" id="stripTrack"></div>
 </div>
 
+<!-- CYBER TICKER -->
+<div class="cyber-ticker">
+  <div class="cyber-ticker-track" id="cyberTicker"></div>
+</div>
+
+<!-- FLOATING WHATSAPP -->
+<a href="https://wa.me/918653368959" target="_blank" class="wa-float" aria-label="WhatsApp">
+  <span class="wa-float-tooltip">Chat on WhatsApp</span>
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
 <!-- ══════════════ SERVICES ══════════════ -->
 <section id="services" style="padding:120px 40px; max-width:none;">
   <div class="services-inner">
-    <div class="section-header reveal">
-      <div class="tag">What We Do</div>
-      <h2 class="section-title">Every service you need<br>to grow online — done right.</h2>
-      <p class="section-desc">From your first impression to your final conversion, we handle every touchpoint of your digital presence.</p>
+    <div class="section-header reveal" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px; margin-bottom:48px;">
+      <div>
+        <div class="tag">What We Do</div>
+        <h2 class="section-title" style="margin-bottom:0;">Everything you need<br>to own your market.</h2>
+      </div>
+      <a href="#contact" class="btn-ghost" style="flex-shrink:0;">View All Services →</a>
     </div>
 
-    <div class="services-grid">
+    <div class="services-bento">
 
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <!-- HERO CARD — Meta Ads -->
+      <div class="sc sc-hero reveal" id="scHero">
+        <div class="sc-corner"></div>
+        <div class="sc-tag">🔥 Most Requested</div>
+        <div class="sc-icon-wrap">
+          <div class="sc-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </div>
+          <div class="sc-live"><div class="sc-live-dot"></div>Active Campaigns</div>
         </div>
-        <div class="service-name">High-Converting Websites</div>
-        <div class="service-desc">Pixel-perfect Shopify & WordPress sites built to turn visitors into paying customers. SEO-ready from day one.</div>
-        <div class="service-price">FROM $120 · ONE-TIME</div>
-        <div class="service-arrow">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        <div class="sc-name">Meta Ads<br>Management</div>
+        <div class="sc-desc">Precision-targeted Facebook & Instagram campaigns engineered to maximise ROAS. Every dollar tracked, every result optimised — relentlessly.</div>
+        <div class="sc-mini-stats">
+          <div class="sc-mini-stat">
+            <div class="sc-mini-num">8.8<span>×</span></div>
+            <div class="sc-mini-label">Avg. ROAS</div>
+          </div>
+          <div class="sc-mini-stat">
+            <div class="sc-mini-num">240<span>+</span></div>
+            <div class="sc-mini-label">Leads/Month</div>
+          </div>
         </div>
+        <div class="sc-price">FROM $180 / MONTH</div>
+        <div class="sc-big-num">01</div>
       </div>
 
-      <div class="service-card reveal reveal-delay-1">
-        <div class="service-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 2H3v16h5l3 3 3-3h7V2z"/><path d="M7 8h10M7 12h6"/></svg>
+      <!-- WIDE CARD — Website -->
+      <div class="sc sc-wide reveal reveal-delay-1" id="scWeb">
+        <div class="sc-corner"></div>
+        <div class="sc-icon-wrap">
+          <div class="sc-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <div class="sc-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          </div>
         </div>
-        <div class="service-name">Meta Ads Management</div>
-        <div class="service-desc">Facebook & Instagram ad campaigns engineered for maximum ROAS. We target the right audience and scale what works.</div>
-        <div class="service-price">FROM $180/MO</div>
-        <div class="service-arrow">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-        </div>
+        <div class="sc-name">High-Converting Websites</div>
+        <div class="sc-desc">Shopify & WordPress sites built to turn visitors into buyers. SEO-ready, mobile-first, and delivered in days — not months.</div>
+        <div class="sc-price">FROM $120 · ONE-TIME PROJECT</div>
       </div>
 
-      <div class="service-card reveal reveal-delay-2">
-        <div class="service-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 2H7L2 12l10 10 10-10-5-10z"/><path d="M12 6v6l4 2"/></svg>
+      <!-- MID CARD — Social Media -->
+      <div class="sc sc-mid reveal" id="scSocial">
+        <div class="sc-corner"></div>
+        <div class="sc-tag">Monthly</div>
+        <div class="sc-icon" style="margin-bottom:16px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 2H7L2 12l10 10 10-10-5-10z"/></svg>
         </div>
-        <div class="service-name">Social Media Management</div>
-        <div class="service-desc">Full content creation, scheduling, and community management for Instagram, Facebook, and LinkedIn.</div>
-        <div class="service-price">FROM $100/MO</div>
-        <div class="service-arrow">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-        </div>
+        <div class="sc-name">Social Media Management</div>
+        <div class="sc-desc">Content creation, posting & community management across Instagram, Facebook, and LinkedIn.</div>
+        <div class="sc-price">FROM $100 / MONTH</div>
       </div>
 
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      <!-- MID CARD — Video -->
+      <div class="sc sc-mid sc-amber reveal reveal-delay-1" id="scVideo">
+        <div class="sc-tag">🎬 Trending</div>
+        <div class="sc-icon" style="margin-bottom:16px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
         </div>
-        <div class="service-name">Viral Video & Reels</div>
-        <div class="service-desc">Professional short-form video editing and AI-generated video content crafted for maximum engagement on every platform.</div>
-        <div class="service-price">$10/VIDEO · $250/MO PACKAGE</div>
-        <div class="service-arrow">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-        </div>
+        <div class="sc-name">Viral Video & Reels</div>
+        <div class="sc-desc">AI-enhanced short-form video editing crafted to stop the scroll on every platform.</div>
+        <div class="sc-price">$10/VIDEO · $250/MO PACKAGE</div>
       </div>
 
-      <div class="service-card reveal reveal-delay-1">
-        <div class="service-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+      <!-- MID CARD — SEO -->
+      <div class="sc sc-mid reveal reveal-delay-2" id="scSeo">
+        <div class="sc-corner"></div>
+        <div class="sc-icon" style="margin-bottom:16px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </div>
-        <div class="service-name">Email Marketing & Funnels</div>
-        <div class="service-desc">Automated email sequences and persuasive copywriting that nurtures leads and drives repeat revenue on autopilot.</div>
-        <div class="service-price">FROM $150/MO</div>
-        <div class="service-arrow">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-        </div>
+        <div class="sc-name">Full SEO Package</div>
+        <div class="sc-desc">On-page, off-page & technical SEO that ranks you organically and keeps you there.</div>
+        <div class="sc-price">FROM $120 / MONTH</div>
       </div>
 
-      <div class="service-card reveal reveal-delay-2">
-        <div class="service-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <!-- WIDE CARD — Email -->
+      <div class="sc sc-wide reveal" id="scEmail">
+        <div class="sc-corner"></div>
+        <div class="sc-icon-wrap">
+          <div class="sc-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+          </div>
+          <div class="sc-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          </div>
         </div>
-        <div class="service-name">Full SEO Package</div>
-        <div class="service-desc">On-page optimization, keyword strategy, and backlink building to rank your site and drive free, sustainable traffic.</div>
-        <div class="service-price">FROM $120/MO</div>
-        <div class="service-arrow">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        <div class="sc-name">Email Marketing & Funnels</div>
+        <div class="sc-desc">Automated sequences and persuasive copy that nurtures leads and drives revenue on autopilot — 24/7, even while you sleep.</div>
+        <div class="sc-price">FROM $150 / MONTH</div>
+      </div>
+
+      <!-- THIRD — AI Chatbot -->
+      <div class="sc sc-third reveal reveal-delay-1">
+        <div class="sc-corner"></div>
+        <div class="sc-icon" style="margin-bottom:14px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a8 8 0 100 16H20V10A8 8 0 0012 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
         </div>
+        <div class="sc-name" style="font-size:1rem;">AI Chatbot Setup</div>
+        <div class="sc-desc" style="font-size:0.8rem;">Automate support & capture leads 24/7.</div>
+        <div class="sc-price">$80 · ONE-TIME</div>
+      </div>
+
+      <!-- THIRD — AI Images -->
+      <div class="sc sc-third sc-amber reveal reveal-delay-2">
+        <div class="sc-icon" style="margin-bottom:14px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="sc-name" style="font-size:1rem;">AI Product Images</div>
+        <div class="sc-desc" style="font-size:0.8rem;">Stunning photorealistic visuals from AI.</div>
+        <div class="sc-price">$25 · PER SET</div>
+      </div>
+
+      <!-- THIRD — Platform Mgmt -->
+      <div class="sc sc-third reveal reveal-delay-3">
+        <div class="sc-corner"></div>
+        <div class="sc-icon" style="margin-bottom:14px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20a8 8 0 100-16 8 8 0 000 16z"/><path d="M12 12a2 2 0 100-4 2 2 0 000 4z"/></svg>
+        </div>
+        <div class="sc-name" style="font-size:1rem;">Platform Management</div>
+        <div class="sc-desc" style="font-size:0.8rem;">Shopify & WordPress maintenance.</div>
+        <div class="sc-price">FROM $100 / MONTH</div>
+      </div>
+
+      <!-- THIRD — Web Scraping -->
+      <div class="sc sc-third reveal reveal-delay-4">
+        <div class="sc-corner"></div>
+        <div class="sc-icon" style="margin-bottom:14px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 000 20"/><path d="M2 12h20"/></svg>
+        </div>
+        <div class="sc-name" style="font-size:1rem;">Web Scraping & Data</div>
+        <div class="sc-desc" style="font-size:0.8rem;">Extract valuable data from any website.</div>
+        <div class="sc-price">FROM $30 · PER PROJECT</div>
       </div>
 
     </div>
@@ -1403,7 +1883,7 @@ footer {
       </div>
       <div class="about-badge">
         <div class="about-badge-num">5★</div>
-        <div class="about-badge-label">Freelancer.com Rating</div>
+        <div class="about-badge-label">47 Reviews · Freelancer.com</div>
       </div>
     </div>
 
@@ -1459,13 +1939,17 @@ footer {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.47 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.38 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
           +91 86533 68959
         </a>
-        <a href="mailto:hello@deepaura.agency" class="contact-link">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
-          hello@deepaura.agency
+        <a href="https://wa.me/918653368959" target="_blank" class="contact-link contact-link-wa">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp: +91 86533 68959
         </a>
-        <a href="https://freelancer.com" target="_blank" class="contact-link">
+        <a href="https://www.freelancer.com/u/SAHINUR2" target="_blank" class="contact-link">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 000 20"/><path d="M2 12h20"/></svg>
-          5★ on Freelancer.com — 150+ reviews
+          5★ on Freelancer.com — 47 Reviews
+        </a>
+        <a href="https://www.linkedin.com/in/md-rahaman-5a40a1180/" target="_blank" class="contact-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          Connect on LinkedIn
         </a>
       </div>
     </div>
@@ -1544,11 +2028,12 @@ footer {
       <a href="#process">Process</a>
       <a href="#pricing">Pricing</a>
     </div>
-    <div class="footer-col">
+      <div class="footer-col">
       <div class="footer-col-title">Contact</div>
       <a href="tel:+918653368959">+91 86533 68959</a>
-      <a href="mailto:hello@deepaura.agency">hello@deepaura.agency</a>
-      <a href="#">Freelancer.com ↗</a>
+      <a href="https://wa.me/918653368959" target="_blank">WhatsApp Chat ↗</a>
+      <a href="https://www.freelancer.com/u/SAHINUR2" target="_blank">Freelancer.com ↗</a>
+      <a href="https://www.linkedin.com/in/md-rahaman-5a40a1180/" target="_blank">LinkedIn ↗</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -1582,16 +2067,7 @@ document.querySelectorAll('a,button,.service-card').forEach(el => {
   el.addEventListener('mouseleave', () => { cur.style.width='12px'; cur.style.height='12px'; ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(0,220,182,0.5)'; });
 });
 
-/* ─── SERVICE CARD GLOW ─── */
-document.querySelectorAll('.service-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
-    const y = ((e.clientY - r.top) / r.height * 100).toFixed(1);
-    card.style.setProperty('--mx', x + '%');
-    card.style.setProperty('--my', y + '%');
-  });
-});
+/* ─── SERVICE CARD GLOW (handled below) ─── */
 
 /* ─── NAV SCROLL ─── */
 window.addEventListener('scroll', () => {
@@ -1700,6 +2176,341 @@ if (metricsEl) barObs.observe(metricsEl);
 
 /* ─── YEAR ─── */
 document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ══════════════════════════════════════════
+   SOUND ENGINE — Web Audio API
+   All sounds synthesized, no external files
+   ══════════════════════════════════════════ */
+(function() {
+  let ctx = null;
+  let soundEnabled = true;
+  const MASTER_VOL = 0.18;
+
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  /* ── Core synth helpers ── */
+  function playTone(freq, type, duration, vol, attack, decay) {
+    if (!soundEnabled) return;
+    try {
+      const c = getCtx();
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.connect(gain); gain.connect(c.destination);
+      osc.type = type || 'sine';
+      osc.frequency.setValueAtTime(freq, c.currentTime);
+      gain.gain.setValueAtTime(0, c.currentTime);
+      gain.gain.linearRampToValueAtTime(vol * MASTER_VOL, c.currentTime + (attack || 0.01));
+      gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + (duration || 0.15));
+      osc.start(c.currentTime);
+      osc.stop(c.currentTime + (duration || 0.15) + 0.05);
+    } catch(e) {}
+  }
+
+  function playNoise(duration, vol, freq) {
+    if (!soundEnabled) return;
+    try {
+      const c = getCtx();
+      const buf = c.createBuffer(1, c.sampleRate * duration, c.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.3;
+      const src = c.createBufferSource();
+      src.buffer = buf;
+      const filter = c.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = freq || 2000;
+      filter.Q.value = 0.5;
+      const gain = c.createGain();
+      gain.gain.setValueAtTime(vol * MASTER_VOL, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + duration);
+      src.connect(filter); filter.connect(gain); gain.connect(c.destination);
+      src.start(); src.stop(c.currentTime + duration + 0.05);
+    } catch(e) {}
+  }
+
+  /* ══ Named Sound Effects ══ */
+
+  // Soft hover tick — very subtle high click
+  window.snd = {
+    hover() {
+      playTone(1800, 'sine', 0.06, 0.4, 0.005, 0.06);
+    },
+    // Button click — satisfying two-tone thud
+    click() {
+      playTone(320, 'triangle', 0.12, 0.9, 0.005, 0.12);
+      setTimeout(() => playTone(220, 'sine', 0.08, 0.5, 0.005, 0.08), 40);
+    },
+    // CTA click — energetic ascending chime
+    ctaClick() {
+      [440, 554, 659, 880].forEach((f, i) => {
+        setTimeout(() => playTone(f, 'sine', 0.18, 0.7, 0.01, 0.18), i * 55);
+      });
+    },
+    // Section reveal — soft whoosh
+    reveal() {
+      playNoise(0.25, 0.5, 800);
+      setTimeout(() => playTone(660, 'sine', 0.15, 0.3, 0.02, 0.15), 80);
+    },
+    // Stat counter complete — success chime
+    complete() {
+      [523, 659, 784].forEach((f, i) => {
+        setTimeout(() => playTone(f, 'sine', 0.22, 0.5, 0.01, 0.22), i * 80);
+      });
+    },
+    // Preloader done — cinematic sweep
+    preloaderDone() {
+      [110, 220, 330, 440, 550].forEach((f, i) => {
+        setTimeout(() => playTone(f, 'triangle', 0.4, 0.4, 0.02, 0.4), i * 60);
+      });
+      setTimeout(() => playNoise(0.4, 0.3, 600), 100);
+    },
+    // WhatsApp hover — gentle notification ping
+    waPing() {
+      playTone(1046, 'sine', 0.15, 0.5, 0.01, 0.15);
+      setTimeout(() => playTone(1318, 'sine', 0.1, 0.35, 0.005, 0.1), 100);
+    },
+    // Card hover — subtle shimmer
+    cardHover() {
+      playTone(1200, 'sine', 0.07, 0.25, 0.005, 0.07);
+    },
+    // Nav link hover
+    navHover() {
+      playTone(900, 'sine', 0.05, 0.25, 0.005, 0.05);
+    },
+    // Form focus
+    formFocus() {
+      playTone(440, 'sine', 0.08, 0.3, 0.01, 0.08);
+    },
+    // Typewriter tick
+    typeTick() {
+      playTone(Math.random() * 200 + 1400, 'square', 0.03, 0.15, 0.001, 0.03);
+    }
+  };
+
+  /* ══ Sound Toggle Button ══ */
+  const toggleBtn = document.createElement('button');
+  toggleBtn.id = 'soundToggle';
+  toggleBtn.innerHTML = '🔊';
+  toggleBtn.title = 'Toggle Sound';
+  Object.assign(toggleBtn.style, {
+    position: 'fixed', bottom: '32px', left: '32px', zIndex: '501',
+    width: '42px', height: '42px', borderRadius: '50%',
+    background: 'rgba(13,17,23,0.9)', border: '1px solid rgba(0,220,182,0.3)',
+    color: 'var(--teal)', fontSize: '16px', cursor: 'pointer',
+    backdropFilter: 'blur(10px)', transition: 'all 0.3s',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.3)'
+  });
+  toggleBtn.addEventListener('mouseenter', () => { toggleBtn.style.borderColor = 'var(--teal)'; toggleBtn.style.boxShadow = '0 0 20px rgba(0,220,182,0.2)'; });
+  toggleBtn.addEventListener('mouseleave', () => { toggleBtn.style.borderColor = 'rgba(0,220,182,0.3)'; toggleBtn.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3)'; });
+  toggleBtn.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    toggleBtn.innerHTML = soundEnabled ? '🔊' : '🔇';
+    toggleBtn.style.opacity = soundEnabled ? '1' : '0.5';
+    if (soundEnabled) window.snd.click();
+  });
+  document.body.appendChild(toggleBtn);
+
+  /* ══ Bind sounds to elements ══ */
+  function bindSounds() {
+    // Nav links
+    document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(el => {
+      el.addEventListener('mouseenter', () => window.snd.navHover());
+    });
+    // Buttons & CTAs
+    document.querySelectorAll('.btn-primary, .nav-cta, .form-submit, .pricing-cta.primary-cta').forEach(el => {
+      el.addEventListener('mouseenter', () => window.snd.hover());
+      el.addEventListener('click', () => window.snd.ctaClick());
+    });
+    // Ghost buttons & secondary
+    document.querySelectorAll('.btn-ghost, .pricing-cta.default, .contact-link').forEach(el => {
+      el.addEventListener('mouseenter', () => window.snd.hover());
+      el.addEventListener('click', () => window.snd.click());
+    });
+    // Service cards
+    document.querySelectorAll('.sc').forEach(el => {
+      el.addEventListener('mouseenter', () => window.snd.cardHover());
+    });
+    // WhatsApp button
+    const waBtn = document.querySelector('.wa-float');
+    if (waBtn) {
+      waBtn.addEventListener('mouseenter', () => window.snd.waPing());
+      waBtn.addEventListener('click', () => window.snd.ctaClick());
+    }
+    // Form inputs
+    document.querySelectorAll('.form-input, .form-textarea, .form-select').forEach(el => {
+      el.addEventListener('focus', () => window.snd.formFocus());
+    });
+    // Hamburger
+    document.getElementById('hamburger')?.addEventListener('click', () => window.snd.click());
+  }
+
+  // Wait for DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindSounds);
+  } else {
+    bindSounds();
+  }
+
+  /* ══ Sound on scroll reveal ══ */
+  const origObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        window.snd.reveal();
+        origObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  // Observe section headers only (not every element)
+  document.querySelectorAll('.section-header, .contact-tagline, .results-big').forEach(el => origObs.observe(el));
+
+  /* ══ Sound on counter complete ══ */
+  const origCounterObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        setTimeout(() => window.snd.complete(), 1900);
+        origCounterObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.counter').forEach(el => origCounterObs.observe(el));
+
+  /* ══ Sound on preloader done ══ */
+  window.addEventListener('load', () => {
+    setTimeout(() => window.snd.preloaderDone(), 2400);
+  });
+
+  /* ══ Patch typewriter to add tick sounds ══ */
+  const _origTypeProto = window._patchTypewriter;
+  window._typeTickSound = () => window.snd.typeTick();
+
+})();
+
+let pct = 0;
+const pctEl = document.getElementById('preLoadPct');
+const pctInt = setInterval(() => {
+  pct = Math.min(pct + Math.floor(Math.random() * 8) + 2, 100);
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (pct >= 100) clearInterval(pctInt);
+}, 60);
+
+/* ─── PARTICLES ─── */
+(function() {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * 2000,
+      y: Math.random() * 900,
+      r: Math.random() * 1.5 + 0.3,
+      dx: (Math.random() - 0.5) * 0.25,
+      dy: (Math.random() - 0.5) * 0.25,
+      o: Math.random() * 0.5 + 0.1,
+      c: Math.random() > 0.7 ? '#F0A500' : '#00DCB6'
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.c;
+      ctx.globalAlpha = p.o;
+      ctx.fill();
+    });
+    // Draw connecting lines
+    ctx.globalAlpha = 1;
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const d = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+        if (d < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = '#00DCB6';
+          ctx.globalAlpha = (1 - d / 100) * 0.08;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ─── CYBER TICKER ─── */
+const tickerData = [
+  { label: 'Avg ROAS', val: '8.8×' },
+  { label: 'Projects', val: '150+' },
+  { label: 'Client Satisfaction', val: '98%' },
+  { label: 'Leads Generated', val: '10K+' },
+  { label: 'Conversion Lift', val: '+72%' },
+  { label: 'Followers Grown', val: '500K+' },
+  { label: 'Freelancer Rating', val: '5.0★' },
+  { label: 'Response Time', val: '<24hrs' },
+];
+const ct = document.getElementById('cyberTicker');
+if (ct) {
+  [...tickerData, ...tickerData, ...tickerData].forEach(t => {
+    const d = document.createElement('div');
+    d.className = 'cyber-ticker-item';
+    d.innerHTML = `<span class="tick-val">${t.val}</span><span class="tick-label">${t.label}</span><span style="color:rgba(0,220,182,0.3);margin-left:20px;">◆</span>`;
+    ct.appendChild(d);
+  });
+}
+
+/* ─── SUBTLE CARD HOVER GLOW (no tilt - stable) ─── */
+document.querySelectorAll('.sc').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
+    const y = ((e.clientY - r.top) / r.height * 100).toFixed(1);
+    card.style.setProperty('--mx', x + '%');
+    card.style.setProperty('--my', y + '%');
+  });
+});
+
+/* ─── TYPEWRITER EFFECT ON HERO ─── */
+(function() {
+  const phrases = ['Convert', 'Scale', 'Grow', 'Perform'];
+  const target = document.querySelector('h1 em');
+  if (!target) return;
+  let pi = 0, ci = 0, deleting = false;
+  const cursor = document.createElement('span');
+  cursor.className = 'typewriter-cursor';
+  function type() {
+    const phrase = phrases[pi];
+    if (!deleting) {
+      target.textContent = phrase.slice(0, ci + 1);
+      if (window._typeTickSound) window._typeTickSound();
+      ci++;
+      if (ci === phrase.length) { deleting = true; setTimeout(type, 2200); return; }
+    } else {
+      target.textContent = phrase.slice(0, ci - 1);
+      ci--;
+      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; }
+    }
+    setTimeout(type, deleting ? 60 : 100);
+  }
+  setTimeout(type, 2000);
+})();
+
 </script>
 </body>
 </html>
