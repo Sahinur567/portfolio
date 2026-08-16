@@ -381,6 +381,55 @@
   /* ─── ANIMATIONS ─── */
   .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s var(--ease-out-expo); }
   .reveal.active { opacity: 1; transform: translateY(0); }
+  /* ─── A LA CARTE MODAL ─── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(3, 4, 8, 0.6); backdrop-filter: blur(8px);
+    z-index: 1000; display: flex; justify-content: flex-end;
+    opacity: 0; visibility: hidden; transition: 0.4s var(--ease-out-expo);
+  }
+  .modal-overlay.active { opacity: 1; visibility: visible; }
+  
+  .modal-panel {
+    width: 100%; max-width: 500px; height: 100%; background: var(--bg-base);
+    border-left: 1px solid var(--border);
+    transform: translateX(100%); transition: 0.5s var(--ease-out-expo);
+    display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+  }
+  .modal-overlay.active .modal-panel { transform: translateX(0); }
+  
+  .modal-header { padding: 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .modal-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+  .modal-close { background: none; border: none; color: var(--text-secondary); transition: 0.3s; padding: 5px; font-size: 1.5rem; line-height: 1; cursor: none; }
+  .modal-close:hover { color: var(--text-primary); transform: rotate(90deg); }
+  
+  .modal-body { padding: 30px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
+  
+  .service-item {
+    display: flex; align-items: flex-start; gap: 15px; padding: 20px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    transition: 0.3s; cursor: none;
+  }
+  .service-item:hover { border-color: var(--border-highlight); background: var(--surface-hover); }
+  .service-item.selected { border-color: var(--accent-primary); background: rgba(99, 102, 241, 0.05); }
+  
+  .svc-checkbox {
+    width: 24px; height: 24px; border: 2px solid var(--text-tertiary); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.3s;
+  }
+  .service-item.selected .svc-checkbox { background: var(--accent-primary); border-color: var(--accent-primary); }
+  .svc-checkbox svg { width: 14px; height: 14px; color: #fff; opacity: 0; transform: scale(0.5); transition: 0.3s; }
+  .service-item.selected .svc-checkbox svg { opacity: 1; transform: scale(1); }
+  
+  .svc-info { flex-grow: 1; }
+  .svc-name { font-weight: 600; font-size: 1.05rem; margin-bottom: 4px; }
+  .svc-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; }
+  .svc-price { font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent-secondary); font-weight: 700; margin-top: 5px; }
+  
+  .modal-footer { padding: 30px; border-top: 1px solid var(--border); background: var(--surface); }
+  .modal-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .mt-label { font-size: 1.1rem; color: var(--text-secondary); }
+  .mt-val { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--text-primary); }
+  .modal-actions { display: flex; gap: 10px; flex-direction: column; }
 </style>
 </head>
 <body>
@@ -768,7 +817,7 @@
   <!-- A La Carte CTA -->
   <div class="reveal" style="text-align: center; margin-top: 50px;">
     <p class="section-desc" style="margin: 0 auto 20px;">Looking for specific, individual tasks on a smaller scale?</p>
-    <a href="pricing.html" class="btn-secondary hoverable" style="padding: 12px 24px; font-size: 0.9rem;">View A La Carte Menu (Starting at $5)</a>
+    <button onclick="toggleQuoteModal(true)" class="btn-secondary hoverable" style="padding: 12px 24px; font-size: 0.9rem; cursor: none;">View A La Carte Menu (Starting at $5)</button>
   </div>
 </section>
 
@@ -871,6 +920,121 @@
   </div>
 </footer>
 
+<!-- Quotation Builder Modal -->
+<div class="modal-overlay" id="quoteModal">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <div class="modal-title">Custom Quotation</div>
+      <button class="modal-close hoverable" onclick="toggleQuoteModal(false)">✕</button>
+    </div>
+    
+    <div class="modal-body" id="svcList">
+      <!-- Generated via JS -->
+    </div>
+    
+    <div class="modal-footer">
+      <div class="modal-total">
+        <div class="mt-label">Total Estimate</div>
+        <div class="mt-val">$<span id="quoteTotal">0</span></div>
+      </div>
+      <div class="modal-actions">
+        <button onclick="sendQuote('whatsapp')" class="btn-secondary hoverable" style="width: 100%; cursor: none;">Send via WhatsApp</button>
+        <button onclick="sendQuote('form')" class="btn-primary hoverable" style="width: 100%; cursor: none;">Send to Secure Form</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const servicesData = [
+    { id: 'seo-upload', name: 'SEO Product Upload', desc: 'Title & Meta Optimization, High-Converting Descriptions (Per Product)', price: 5 },
+    { id: 'social-post', name: 'Social Media Post', desc: 'Platform-Specific Sizing, Psychological Branding (Per Custom Graphic)', price: 10 },
+    { id: 'ai-video', name: 'AI Short Video', desc: 'High-Retention Editing, AI Voiceover & Captions (Per Video)', price: 15 },
+    { id: 'web-maint', name: 'Web Maintenance', desc: 'Security Patching, Speed Optimization Checks (Monthly Retainer)', price: 29 },
+    { id: 'ai-chat', name: 'AI Chatbot Setup', desc: 'Custom Knowledge Base, Lead Generation Funnel (One-Time Integration)', price: 49 }
+  ];
+
+  let selectedServices = new Set();
+  const quoteModal = document.getElementById('quoteModal');
+  const svcList = document.getElementById('svcList');
+  const totalEl = document.getElementById('quoteTotal');
+
+  function initQuoteModal() {
+    svcList.innerHTML = '';
+    servicesData.forEach(svc => {
+      const item = document.createElement('div');
+      item.className = 'service-item hoverable';
+      item.onclick = () => toggleService(item, svc.id, svc.price);
+      
+      item.innerHTML = `
+        <div class="svc-checkbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <div class="svc-info">
+          <div class="svc-name">${svc.name}</div>
+          <div class="svc-desc">${svc.desc}</div>
+          <div class="svc-price">$${svc.price}</div>
+        </div>
+      `;
+      svcList.appendChild(item);
+    });
+  }
+
+  function toggleService(element, id, price) {
+    if(selectedServices.has(id)) {
+      selectedServices.delete(id);
+      element.classList.remove('selected');
+    } else {
+      selectedServices.add(id);
+      element.classList.add('selected');
+    }
+    updateTotal();
+  }
+
+  function updateTotal() {
+    let total = 0;
+    selectedServices.forEach(id => {
+      total += servicesData.find(s => s.id === id).price;
+    });
+    totalEl.innerText = total;
+  }
+
+  function toggleQuoteModal(show) {
+    if(show) {
+      quoteModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    } else {
+      quoteModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  }
+
+  function sendQuote(method) {
+    if(selectedServices.size === 0) {
+      alert("Please select at least one service.");
+      return;
+    }
+    
+    let msg = "Hello! I would like to request the following A La Carte services:\n\n";
+    let total = 0;
+    selectedServices.forEach(id => {
+      const svc = servicesData.find(s => s.id === id);
+      msg += `- ${svc.name} ($${svc.price})\n`;
+      total += svc.price;
+    });
+    msg += `\nEstimated Budget: $${total}\n\nPlease let me know the next steps!`;
+
+    if(method === 'whatsapp') {
+      window.open(`https://wa.me/918653368959?text=${encodeURIComponent(msg)}`, '_blank');
+    } else if (method === 'form') {
+      toggleQuoteModal(false);
+      document.querySelector('textarea[name="message"]').value = msg;
+      document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  initQuoteModal();
+</script>
 <script>
   // Preloader
   window.addEventListener('load', () => {
