@@ -115,7 +115,7 @@
 
   /* ─── NAVIGATION ─── */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    position: fixed; top: 40px; left: 0; right: 0; z-index: 100;
     padding: 25px 5%; display: flex; align-items: center; justify-content: space-between;
     transition: all 0.4s var(--ease-out-expo);
   }
@@ -160,7 +160,7 @@
   #hero {
     position: relative; overflow: hidden;
     min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
-    padding-top: 120px; padding-bottom: 60px;
+    padding-top: 160px; padding-bottom: 60px;
   }
   #hero-canvas {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: auto;
@@ -430,9 +430,34 @@
   .mt-label { font-size: 1.1rem; color: var(--text-secondary); }
   .mt-val { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--text-primary); }
   .modal-actions { display: flex; gap: 10px; flex-direction: column; }
+  
+  /* ─── PROMO BANNER ─── */
+  .promo-banner {
+    position: fixed; top: 0; left: 0; width: 100%; height: 40px; z-index: 110;
+    background: var(--accent-gradient);
+    display: flex; align-items: center; justify-content: center; gap: 15px;
+    font-size: 0.85rem; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .promo-btn {
+    background: #fff; color: var(--accent-primary); border: none; border-radius: 100px;
+    padding: 4px 12px; font-size: 0.75rem; font-weight: 700; cursor: none; transition: 0.3s;
+    text-transform: uppercase; margin-left: 10px;
+  }
+  .promo-btn:hover { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+  @media (max-width: 768px) {
+    .promo-banner { font-size: 0.65rem; padding: 0 10px; height: 50px; text-align: center; line-height: 1.2; flex-direction: column; justify-content: center; gap: 4px; }
+    .promo-btn { font-size: 0.6rem; padding: 3px 8px; margin-left: 0; }
+    nav { top: 50px; }
+  }
 </style>
 </head>
 <body>
+
+<!-- Promo Banner -->
+<div class="promo-banner">
+  <span>🔥 EXCLUSIVE FOR EXISTING CLIENTS: Get a Complete 3-Page Website (Design & Dev) — 100% FREE.</span>
+  <button onclick="claimOffer()" class="promo-btn hoverable">Claim Offer</button>
+</div>
 
 <!-- Custom Cursor -->
 <div id="cursor-dot"></div>
@@ -1222,6 +1247,14 @@
       requestAnimationFrame(animate);
     }
     animate();
+  }
+
+  function claimOffer() {
+    const msgBox = document.querySelector('textarea[name="message"]');
+    if(msgBox) {
+      msgBox.value = "Hello! I am an existing client and I would like to claim the Free 3-Page Website offer.";
+    }
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
   }
 </script>
 </body>
