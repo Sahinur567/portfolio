@@ -158,9 +158,14 @@
 
   /* ─── HERO SECTION ─── */
   #hero {
+    position: relative; overflow: hidden;
     min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
     padding-top: 120px; padding-bottom: 60px;
   }
+  #hero-canvas {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: auto;
+  }
+  .hero-inner, .data-bar { position: relative; z-index: 10; }
   .hero-inner { max-width: 900px; margin: 0 auto; text-align: center; }
   .hero-title {
     font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 800; line-height: 1.05;
@@ -423,6 +428,7 @@
 
 <!-- Hero Section -->
 <section id="hero">
+  <canvas id="hero-canvas"></canvas>
   <div class="hero-inner reveal">
     <div class="section-badge">System Online // Capacity 100%</div>
     <h1 class="hero-title">Next-Gen Growth<br>Engineered To <span class="text-gradient">Perform.</span></h1>
@@ -953,6 +959,84 @@
 
   // Footer Year
   document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // --- HERO PARTICLE NETWORK ---
+  const canvas = document.getElementById('hero-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width, height, particles = [];
+    const connectionDistance = 150;
+    let mouse = { x: -9999, y: -9999 };
+
+    function resize() {
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    window.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+    window.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 1.2;
+        this.vy = (Math.random() - 0.5) * 1.2;
+        this.size = Math.random() * 2 + 1;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          this.x -= dx * 0.02;
+          this.y -= dy * 0.02;
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(99, 102, 241, 0.7)';
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => { p.update(); p.draw(); });
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < connectionDistance) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(20, 184, 166, ${0.15 - (dist / connectionDistance) * 0.15})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
 </script>
 </body>
 </html>
